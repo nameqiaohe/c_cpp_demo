@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- default在这里相当于入口 -->
+<project name="print_hello" default="compile" basedir=".">
+	<!-- 源文件存放路径 -->
+	<property name="src.dir" value="." />
+	<!-- 存放编译结果的路径 -->
+	<property name="result.dir" value="./result" />
+
+	<!-- 初始化 -->
+	<target name="init">
+		<mkdir dir="${result.dir}" />
+	</target>
+
+	<!-- 编译 -->
+	<target name="compile" depends="init" description="Compile source code">
+		<javac srcdir="${src.dir}" destdir="${result.dir}" includeantruntime="on"/>
+	</target>
+
+	<!-- 清除 -->
+	<target name="clean" description="erase results">
+		<echo>Cleaning...</echo>
+		<delete dir="${result.dir}" />
+	</target>
+</project>

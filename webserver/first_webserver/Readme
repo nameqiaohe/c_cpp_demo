@@ -1,0 +1,21 @@
+参考：http://mp.weixin.qq.com/s?__biz=MzA3MDExNzcyNA==&mid=2650392209&idx=1&sn=ed4e16d807e9eb2bfca8dbb85be0bb86&scene=0#wechat_redirect
+1、开发环境准备
+	(1)编辑环境、编译环境、运行时环境
+	(2)JDK
+	(3)ant
+	(4)jetty
+
+2、有关java编译、运行
+	编译：
+		javac 编译xxx.java，生成结果与java文件中的类名有关系
+			如：类名为 Hello，则通过 javac 编译出来的加过就是 Hello.class
+	运行：
+		通过 java Hello来运行java代码
+
+3、build.xml
+	参考：http://blog.csdn.net/bao19901210/article/details/23843749
+
+4、编译过程中出现的警告
+	warning: 'includeantruntime' was not set'
+	解决方法：在编译中加入 includeantruntime="on"
+		<javac srcdir="${src.dir}" destdir="${result.dir}" includeantruntime="on"/>
