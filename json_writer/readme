@@ -1,0 +1,94 @@
+======================= C++ 编写Json生成器 ==========================
+
+1、简介
+	Json：是javaScript的对象表示法，用于在服务器 和 客户端之间传送数据。
+(xml 有类似功能)
+
+2、Json的特点
+	(1) 语言独立：json有自己的结构与法，开发者可以很容易的去写和读
+	(2) 轻量：比如在使用ajax时，需要能快速加载 和 异步读取数据，轻量的特点使得json可以很好的完成任务 ？？？
+	(3) 扩展：json是语言独立的，因此不止可以在 js 中，在现在很多语言中都有很好的利用
+
+3、json对象：
+	var person = {
+		"name" : "google",
+		"age" : "10",
+		"gender" : "male"
+	};
+
+   json数组：
+	var students = [{
+		"name" : "google",
+		"age" : "10",
+		"gender" : "male"
+	    },
+	    {
+		"name" : "baidu",
+		"age" : "8",
+		"gender" : "female"
+	    },
+	    {
+		"name" : "bring",
+		"age" : "10",
+		"gender" : "male"
+	    }];
+
+   json对象的嵌套：
+	var students = {
+		"steve" : {
+			"name" : "steve",
+			"age" : "10",
+			"gender" : "male"
+		}
+		"lili" : {
+			"name" : "lili",
+			"age" : "10",
+			"gender" : "female"
+		}
+		"barry" : {
+			"name" : "barry",
+			"age" : "12",
+			"gender" : "male"
+		}
+	}
+
+4、常用的C++ json库
+	(1) rapidjson：
+		跨平台
+			编译器：Visual Studio、gcc、clang
+			架构：x86、x64、ARM
+			操作系统：Windows、Mac OS X、Linux、IOS、Android
+		易安装：
+			只有头文件的库，只需将头文件复制到项目中
+		独立、最小依赖：
+			不依赖STL、BOOST
+		没使用C++异常、RTTI
+		高性能：
+			使用模版 及 内联函数去降低函数调用开销
+			内部经优化的Grisu2 及 浮点数解析实现
+			可选的SSE2/SSE4.2支持
+
+	(2) jsoncpp
+		读取、写入的JSON文档
+		在解析期间，C++风格的注释附加到元素
+		重写JSON文档保存原文档
+
+	(3) json++
+		JSON解析器基于C++11
+		它解析JSON格式的字符串、文件，并生生一个代表JSON结构的内存树
+		JSON对象映射到标准哈希表、数组、向量
+		JSON类型映射到C++类型
+		使用标准库，不添加额外的函数库
+
+5、stack
+	使用 stack来存储 json对象的深度，用于在输出标准的 json数据时格式控制。
+
+	栈 是一种容器适配器，专门设计用于在 LIFO，其中元素仅从容器的一端插入 和 提取。底层容器可以是任何标准容器类模版 或 一些其他特别设计的容器类。
+	容器应支持以下操作：
+		empty()
+		size()
+		top()
+		push()
+		emplace() 构造、插入元素
+		pop()
+		swap()
