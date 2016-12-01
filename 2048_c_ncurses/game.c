@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-11-29 22:15:59
+# Last Modified: 2016-12-01 23:52:21
 ####################################################*/
 #include "game.h"
 
@@ -28,6 +28,8 @@ void init(){
 	row = rand() % 4;
 
 	map[row][col] = 2;
+	empty--;
+
 	draw();
 }
 
@@ -62,21 +64,21 @@ void draw(){
 void draw_one(int row, int col){
 	int i, m, k, j;
 
-	char c[5] = {0x00};
+	char temp[5] = {0x00};
 	i = map[row][col];
 	m = 0;
 
 	while(i > 0){
 		j = i % 10;
-		c[m++] = j + '0';
+		temp[m++] = j + '0';
 		i = i/10;
 	}
 
 	m = 0;
 	k = (col + 1)*5 - 1;
-	while(c[m] != 0x00){
+	while(temp[m] != 0x00){
 		move(2*row+1, k);
-		addch(c[m++]);
+		addch(temp[m++]);
 		k--;
 	}
 }
@@ -324,8 +326,8 @@ void cnt_value(int *new_row, int *new_col){
 	int max = 0;
 
 	max = cnt_one(*new_row, *new_col);
-	for(row = 0; row < 4; ++row){
-		for(col = 0; col < 4; ++col){
+	for(row = 0; row < ROW; ++row){
+		for(col = 0; col < COL; ++col){
 			if(!map[row][col]){	//if(map[row][col] == 0)
 				value = cnt_one(row, col);
 				if(value > max && old_row != row && old_col != col){

@@ -3,7 +3,7 @@ FLAG = -lcurses
 RESULT = 2048
 
 all:
-	gcc $(SRC) -o $(RESULT) $(FLAG)
+	gcc $(SRC) -g -o $(RESULT) $(FLAG)
 
 .PHONY:all clean
 
