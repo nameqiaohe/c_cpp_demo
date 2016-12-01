@@ -21,49 +21,49 @@ void init(){
 	noecho();
 	curs_set(0);
 
-	int x, y;
-	empty = 15;
+	int row, col;
+	empty = PANE;
 	srand(time(0));
-	x = rand() % 4;
-	y = rand() % 4;
+	col = rand() % 4;
+	row = rand() % 4;
 
-	map[y][x] = 2;
+	map[row][col] = 2;
 	draw();
 }
 
 void draw(){
-	int row, col, x, y;
+	int width, height, row, col;
 
 	clear();
 
-	for(row = 0; row < 9; row += 2){
-		for(col = 0; col < 21; ++col){
-			move(row, col);
+	for(height = ROW_START; height < ROW_START+HEIGHT-1; height += 2){
+		for(width = COL_START; width < COL_START+WIDTH-1; ++width){
+			move(height, width);
 			addch('-');
 			refresh();
 		}
 	}
 
-	for(col = 0; col < 22; col += 5){
-		for(row = 1; row < 8; ++row){
-			move(row, col);
+	for(width = COL_START; width < WIDTH; width += 5){
+		for(height = ROW_START+1; height < HEIGHT-2; ++height){
+			move(height, width);
 			addch('|');
 			refresh();
 		}
 	}
 
-	for(y = 0; y < 4; ++y){
-		for(x = 0; x < 4; ++x){
-			draw_one(y, x);
+	for(row = ROW_START; row < ROW_START+ROW; ++row){
+		for(col = COL_START; col < COL; ++col){
+			draw_one(row, col);
 		}
 	}
 }
 
-void draw_one(int y, int x){
+void draw_one(int row, int col){
 	int i, m, k, j;
 
 	char c[5] = {0x00};
-	i = map[y][x];
+	i = map[row][col];
 	m = 0;
 
 	while(i > 0){
@@ -73,16 +73,16 @@ void draw_one(int y, int x){
 	}
 
 	m = 0;
-	k = (x + 1)*5 - 1;
+	k = (col + 1)*5 - 1;
 	while(c[m] != 0x00){
-		move(2*y+1, k);
+		move(2*row+1, k);
 		addch(c[m++]);
 		k--;
 	}
 }
 
 void play(){
-	int x, y, i, new_x, new_y, temp;
+	int col, row, i, new_col, new_row, number;
 	int old_empty, step;
 	char ch;
 
@@ -94,19 +94,19 @@ void play(){
 			case 97:	//左 a
 			case 104:	// h
 			case 68:	//左方向键
-				for(y = 0; y < 4; ++y){
-					for(x = 0; x < 4;){
-						if(map[y][x] == 0){
-							x++;
+				for(row = 0; row < 4; ++row){
+					for(col = 0; col < 4;){
+						if(map[row][col] == 0){
+							col++;
 							continue;
 						}else{
-							for(i = x+1; i < 4; ++i){
-								if(map[y][x] == 0){
+							for(i = col+1; i < 4; ++i){
+								if(map[row][col] == 0){
 									continue;
 								}else{
-									if(map[y][x] == map[y][i]){
-										map[y][x] += map[y][i];
-										map[y][i] = 0;
+									if(map[row][col] == map[row][i]){
+										map[row][col] += map[row][i];
+										map[row][i] = 0;
 										empty++;
 										break;
 									}else{
@@ -114,19 +114,19 @@ void play(){
 									}
 								}
 							}
-							x = i;
+							col = i;
 						}
 					}
 				}
 
-				for(y = 0; y < 4; ++y){
-					for(x = 0; x < 4; x++){
-						if(map[y][x] == 0){
+				for(row = 0; row < 4; ++row){
+					for(col = 0; col < 4; col++){
+						if(map[row][col] == 0){
 							continue;
 						}else{
-							for(i = x; (i > 0) && (map[y][i-1] == 0); --i){
-								map[y][i-1] = map[y][i];
-								map[y][i] = 0;
+							for(i = col; (i > 0) && (map[row][i-1] == 0); --i){
+								map[row][i-1] = map[row][i];
+								map[row][i] = 0;
 								step = 1;
 							}
 						}
@@ -137,36 +137,36 @@ void play(){
 			case 100:	//右移 d
 			case 108:	// l
 			case 67:	//右方向键
-				for(y = 0; y < 4; ++y){
-					for(x = 3; x >= 0;){
-						if(map[y][x] == 0){
-							x--;
+				for(row = 0; row < 4; ++row){
+					for(col = 3; col >= 0;){
+						if(map[row][col] == 0){
+							col--;
 							continue;
 						}else{
-							for(i = x-1; i >= 0; i--){
-								if(map[y][i] == 0){
+							for(i = col-1; i >= 0; i--){
+								if(map[row][i] == 0){
 									continue;
-								}else if(map[y][x] == map[y][i]){
-									map[y][x] += map[y][i];
-									map[y][i] = 0;
+								}else if(map[row][col] == map[row][i]){
+									map[row][col] += map[row][i];
+									map[row][i] = 0;
 									empty++;
 									break;
 								}else{
 									break;
 								}
 							}
-							x = i;
+							col = i;
 						}
 					}
 				}
-				for(y = 0; y < 4; ++y){
-					for(x = 3; x >= 0; --x){
-						if(map[y][x] == 0){
+				for(row = 0; row < 4; ++row){
+					for(col = 3; col >= 0; --col){
+						if(map[row][col] == 0){
 							continue;
 						}else{
-							for(i = x; (i < 3) && (map[y][i+1] == 0); ++i){
-								map[y][i+1] = map[y][i];
-								map[y][i] = 0;
+							for(i = col; (i < 3) && (map[row][i+1] == 0); ++i){
+								map[row][i+1] = map[row][i];
+								map[row][i] = 0;
 								step = 1;
 							}
 						}
@@ -177,36 +177,36 @@ void play(){
 			case 119:	//上移 w
 			case 107:	// k
 			case 65:	//上方向键
-				for(x = 0; x < 4; ++x){
-					for(y = 0; y < 4;){
-						if(map[y][x] == 0){
-							y++;
+				for(col = 0; col < 4; ++col){
+					for(row = 0; row < 4;){
+						if(map[row][col] == 0){
+							row++;
 							continue;
 						}else{
-							for(i = y+1; i < 4; ++i){
-								if(map[i][x] == 0){
+							for(i = row+1; i < 4; ++i){
+								if(map[i][col] == 0){
 									continue;
-								}else if(map[y][x] == map[i][x]){
-									map[y][x] += map[i][x];
-									map[i][x] = 0;
+								}else if(map[row][col] == map[i][col]){
+									map[row][col] += map[i][col];
+									map[i][col] = 0;
 									empty++;
 									break;
 								}else{
 									break;
 								}
 							}
-							y = i;
+							row = i;
 						}
 					}
 				}
-				for(x = 0; x < 4; ++x){
-					for(y = 0; y < 4; ++y){
-						if(map[y][x] == 0){
+				for(col = 0; col < 4; ++col){
+					for(row = 0; row < 4; ++row){
+						if(map[row][col] == 0){
 							continue;
 						}else{
-							for(i = y; (i > 0) && (map[i-1][x] == 0); --i){
-								map[i-1][x] = map[i][x];
-								map[i][x] = 0;
+							for(i = row; (i > 0) && (map[i-1][col] == 0); --i){
+								map[i-1][col] = map[i][col];
+								map[i][col] = 0;
 								step = 1;
 							}
 						}
@@ -216,36 +216,36 @@ void play(){
 			case 115:	//下移 s
 			case 106:	// j
 			case 66:	//下方向键
-				for(x = 0; x < 4; ++x){
-					for(y = 3; y >= 0;){
-						if(map[y][x] == 0){
-							--y;
+				for(col = 0; col < 4; ++col){
+					for(row = 3; row >= 0;){
+						if(map[row][col] == 0){
+							--row;
 							continue;
 						}else{
-							for(i = y-1; i >= 0; --i){
-								if(map[i][x] == 0){
+							for(i = row-1; i >= 0; --i){
+								if(map[i][col] == 0){
 									continue;
-								}else if(map[y][x] == map[i][x]){
-									map[y][x] += map[i][x];
-									map[i][x] = 0;
+								}else if(map[row][col] == map[i][col]){
+									map[row][col] += map[i][col];
+									map[i][col] = 0;
 									empty++;
 									break;
 								}else{
 									break;
 								}
 							}
-							y = i;
+							row = i;
 						}
 					}
 				}
-				for(x = 0; x < 4; ++x){
-					for(y = 3; y >= 0; --y){
-						if(map[y][x] == 0){
+				for(col = 0; col < 4; ++col){
+					for(row = 3; row >= 0; --row){
+						if(map[row][col] == 0){
 							continue;
 						}else{
-							for(i = y; (i < 3) && (map[i+1][x] == 0); ++i){
-								map[i+1][x] = map[i][x];
-								map[i][x] = 0;
+							for(i = row; (i < 3) && (map[i+1][col] == 0); ++i){
+								map[i+1][col] = map[i][col];
+								map[i][col] = 0;
 								step = 1;
 							}
 						}
@@ -267,17 +267,17 @@ void play(){
 
 		if((empty != old_empty) || (step == 1)){
 			do{
-				new_x = rand() % 4;
-				new_y = rand() % 4;
-			}while(map[new_y][new_x] != 0);
+				new_col = rand() % 4;
+				new_row = rand() % 4;
+			}while(map[new_row][new_col] != 0);
 
-			cnt_value(&new_y, &new_x);
+			cnt_value(&new_row, &new_col);
 
 			do{
-				temp = rand() % 4;
-			}while(temp == 0 || temp == 2);
+				number = rand() % 4;
+			}while(number == 0 || number == 2);
 
-			map[new_y][new_x] = temp + 1;
+			map[new_row][new_col] = number + 1;
 			empty--;
 		}
 
@@ -285,55 +285,55 @@ void play(){
 	}
 }
 
-int cnt_one(int y, int x){
+int cnt_one(int row, int col){
 	int value = 0;
 
-	if(y-1 > 0){
-		map[y-1][x] ? 0 : value++;
+	if(row-1 > 0){
+		map[row-1][col] ? 0 : value++;
 	}
-	if(y+1 < 4){
-		map[y+1][x] ? 0 : value++;
-	}
-
-	if(x-1 >= 0){
-		map[y][x-1] ? 0 : value++;
-	}
-	if(x+1 < 4){
-		map[y][x+1] ? 0 : value++;
+	if(row+1 < 4){
+		map[row+1][col] ? 0 : value++;
 	}
 
-	if(y-1 >= 0 && x-1 >= 0){
-		map[y-1][x-1] ? 0 : value++;
+	if(col-1 >= 0){
+		map[row][col-1] ? 0 : value++;
 	}
-	if(y-1 >= 0 && x+1 < 4){
-		map[y-1][x+1] ? 0 : value++;
+	if(col+1 < 4){
+		map[row][col+1] ? 0 : value++;
 	}
 
-	if(y+1 < 4 && x-1 >= 0){
-		map[y+1][x-1] ? 0 : value++;
+	if(row-1 >= 0 && col-1 >= 0){
+		map[row-1][col-1] ? 0 : value++;
 	}
-	if(y+1 < 4 && x+1 < 4){
-		map[y+1][x+1] ? 0 : value++;
+	if(row-1 >= 0 && col+1 < 4){
+		map[row-1][col+1] ? 0 : value++;
+	}
+
+	if(row+1 < 4 && col-1 >= 0){
+		map[row+1][col-1] ? 0 : value++;
+	}
+	if(row+1 < 4 && col+1 < 4){
+		map[row+1][col+1] ? 0 : value++;
 	}
 
 	return value;
 }
 
-void cnt_value(int *new_y, int *new_x){
-	int max_x, max_y, x, y, value;
+void cnt_value(int *new_row, int *new_col){
+	int max_col, max_row, col, row, value;
 	int max = 0;
 
-	max = cnt_one(*new_y, *new_x);
-	for(y = 0; y < 4; ++y){
-		for(x = 0; x < 4; ++x){
-			if(!map[y][x]){	//if(map[y][x] == 0)
-				value = cnt_one(y, x);
-				if(value > max && old_y != y && old_x != x){
+	max = cnt_one(*new_row, *new_col);
+	for(row = 0; row < 4; ++row){
+		for(col = 0; col < 4; ++col){
+			if(!map[row][col]){	//if(map[row][col] == 0)
+				value = cnt_one(row, col);
+				if(value > max && old_row != row && old_col != col){
 					//避免同一位置反复出现数字
-					*new_y = y;
-					*new_x = x;
-					old_y = y;
-					old_x = x;
+					*new_row = row;
+					*new_col = col;
+					old_row = row;
+					old_row = col;
 					break;
 				}
 			}
