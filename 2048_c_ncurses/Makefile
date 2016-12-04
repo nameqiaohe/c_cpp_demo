@@ -1,9 +1,15 @@
+CC = gcc
+CFLAGS += -Wall
+LIBS += -lcurses
+
 SRC = ${shell ls *.c}
-FLAG = -lcurses
 RESULT = 2048
 
+include env.mk
+
 all:
-	gcc $(SRC) -g -o $(RESULT) $(FLAG)
+	@echo "make game : 2048"
+	$(CC) $(SRC) $(GDBFLAG) -o $(RESULT) $(CFLAGS) $(LIBS)
 
 .PHONY:all clean
 
