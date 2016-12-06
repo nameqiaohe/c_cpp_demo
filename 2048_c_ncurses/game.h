@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:11:20
-# Last Modified: 2016-12-01 23:58:05
+# Last Modified: 2016-12-06 21:01:23
 ####################################################*/
 #ifndef GAME_H
 #define GAME_H
@@ -17,11 +17,12 @@
 
 #define PANE 16
 
-#define ROW_START 0
-#define COL_START 0
+#define ROW_START 10
+#define COL_START 35
 
 #define WIDTH 22
 #define HEIGHT 10
+#define DISTANCE 5
 
 #define ROW 4
 #define COL 4

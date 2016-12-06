@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-04 22:05:22
+# Last Modified: 2016-12-06 21:00:09
 ####################################################*/
 #include "game.h"
 
@@ -46,16 +46,16 @@ void draw(){
 		}
 	}
 
-	for(width = COL_START; width < WIDTH; width += 5){
-		for(height = ROW_START+1; height < HEIGHT-2; ++height){
+	for(width = COL_START; width < COL_START+WIDTH; width += DISTANCE){
+		for(height = ROW_START+1; height < ROW_START+HEIGHT-2; ++height){
 			move(height, width);
 			addch('|');
 			refresh();
 		}
 	}
 
-	for(row = ROW_START; row < ROW_START+ROW; ++row){
-		for(col = COL_START; col < COL; ++col){
+	for(row = 0; row < ROW; ++row){
+		for(col = 0; col < COL; ++col){
 			draw_one(row, col);
 		}
 	}
@@ -75,9 +75,9 @@ void draw_one(int row, int col){
 	}
 
 	m = 0;
-	k = (col + 1)*5 - 1;
+	k = (col+COL_START/DISTANCE+1)*DISTANCE - 1;
 	while(temp[m] != 0x00){
-		move(2*row+1, k);
+		move(2*(row+DISTANCE)+1, k);
 		addch(temp[m++]);
 		k--;
 	}
