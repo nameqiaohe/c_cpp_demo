@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:11:20
-# Last Modified: 2016-12-06 23:00:10
+# Last Modified: 2016-12-06 23:07:02
 ####################################################*/
 #ifndef GAME_H
 #define GAME_H
@@ -37,9 +37,9 @@ void draw();
 void play();
 void init();
 void draw_number(int row, int col);
-void cnt_value(int *new_row, int *new_col);
+void count_value(int *new_row, int *new_col);
+int count_one(int row, int col);
 int game_over();
-int cnt_one(int row, int col);
 void moveLeft(int row, int col, int i, int *step);
 void moveRight(int row, int col, int i, int *step);
 void moveUp(int row, int col, int i, int *step);

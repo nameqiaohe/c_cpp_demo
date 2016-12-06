@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-06 23:01:55
+# Last Modified: 2016-12-06 23:08:35
 ####################################################*/
 #include "game.h"
 
@@ -138,7 +138,7 @@ void play(){
 				new_row = rand() % 4;
 			}while(map[new_row][new_col] != 0);
 
-			cnt_value(&new_row, &new_col);
+			count_value(&new_row, &new_col);
 
 			do{
 				number = rand() % 4;
@@ -152,8 +152,8 @@ void play(){
 	}
 }
 
-//下边两个函数用于统计每一个方格周围的空的格子个数
-int cnt_one(int row, int col){
+//统计每一个方格周围一圈空的格子个数
+int count_one(int row, int col){
 	int value = 0;
 
 	if(row-1 > 0){
@@ -187,15 +187,15 @@ int cnt_one(int row, int col){
 	return value;
 }
 
-void cnt_value(int *new_row, int *new_col){
+void count_value(int *new_row, int *new_col){
 	int col, row, value;
 	int max = 0;
 
-	max = cnt_one(*new_row, *new_col);
+	max = count_one(*new_row, *new_col);
 	for(row = 0; row < ROW; ++row){
 		for(col = 0; col < COL; ++col){
 			if(!map[row][col]){	//if(map[row][col] == 0)
-				value = cnt_one(row, col);
+				value = count_one(row, col);//优选周围空格子最多的方格填入数字
 				if(value > max && old_row != row && old_col != col){
 					//避免同一位置反复出现数字
 					*new_row = row;
