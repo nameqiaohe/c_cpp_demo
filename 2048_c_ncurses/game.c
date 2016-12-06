@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-06 22:39:56
+# Last Modified: 2016-12-06 23:01:55
 ####################################################*/
 #include "game.h"
 
@@ -46,7 +46,7 @@ void draw(){
 			refresh();
 		}
 	}
-	
+
 	//画四条竖线
 	for(width = COL_START; width < COL_START+WIDTH; width += COL_DISTANCE){
 		for(height = ROW_START+1; height < ROW_START+HEIGHT+1; ++height){
@@ -55,7 +55,7 @@ void draw(){
 			refresh();
 		}
 	}
-	
+
 	//给每一个框中填上数字
 	for(row = 0; row < ROW; ++row){
 		for(col = 0; col < COL; ++col){
@@ -88,7 +88,7 @@ void draw_number(int row, int col){
 }
 
 void play(){
-	int col, row, i, new_col, new_row, number;
+	int col = 0, row = 0, i = 0, new_col, new_row, number;
 	int old_empty, step;
 	char ch;
 
@@ -100,163 +100,24 @@ void play(){
 			case 97:	//左 a
 			case 104:	// h
 			case 68:	//左方向键
-				for(row = 0; row < 4; ++row){
-					for(col = 0; col < 4;){
-						if(map[row][col] == 0){
-							col++;
-							continue;
-						}else{
-							for(i = col+1; i < 4; ++i){
-								if(map[row][col] == 0){
-									continue;
-								}else{
-									if(map[row][col] == map[row][i]){
-										map[row][col] += map[row][i];
-										map[row][i] = 0;
-										empty++;
-										break;
-									}else{
-										break;
-									}
-								}
-							}
-							col = i;
-						}
-					}
-				}
-
-				for(row = 0; row < 4; ++row){
-					for(col = 0; col < 4; col++){
-						if(map[row][col] == 0){
-							continue;
-						}else{
-							for(i = col; (i > 0) && (map[row][i-1] == 0); --i){
-								map[row][i-1] = map[row][i];
-								map[row][i] = 0;
-								step = 1;
-							}
-						}
-					}
-				}
-				break;
+				moveLeft(row, col, i, &step);
+					break;
 
 			case 100:	//右移 d
 			case 108:	// l
 			case 67:	//右方向键
-				for(row = 0; row < 4; ++row){
-					for(col = 3; col >= 0;){
-						if(map[row][col] == 0){
-							col--;
-							continue;
-						}else{
-							for(i = col-1; i >= 0; i--){
-								if(map[row][i] == 0){
-									continue;
-								}else if(map[row][col] == map[row][i]){
-									map[row][col] += map[row][i];
-									map[row][i] = 0;
-									empty++;
-									break;
-								}else{
-									break;
-								}
-							}
-							col = i;
-						}
-					}
-				}
-				for(row = 0; row < 4; ++row){
-					for(col = 3; col >= 0; --col){
-						if(map[row][col] == 0){
-							continue;
-						}else{
-							for(i = col; (i < 3) && (map[row][i+1] == 0); ++i){
-								map[row][i+1] = map[row][i];
-								map[row][i] = 0;
-								step = 1;
-							}
-						}
-					}
-				}
-				break;
+				moveRight(row, col, i, &step);
+					break;
 
 			case 119:	//上移 w
 			case 107:	// k
 			case 65:	//上方向键
-				for(col = 0; col < 4; ++col){
-					for(row = 0; row < 4;){
-						if(map[row][col] == 0){
-							row++;
-							continue;
-						}else{
-							for(i = row+1; i < 4; ++i){
-								if(map[i][col] == 0){
-									continue;
-								}else if(map[row][col] == map[i][col]){
-									map[row][col] += map[i][col];
-									map[i][col] = 0;
-									empty++;
-									break;
-								}else{
-									break;
-								}
-							}
-							row = i;
-						}
-					}
-				}
-				for(col = 0; col < 4; ++col){
-					for(row = 0; row < 4; ++row){
-						if(map[row][col] == 0){
-							continue;
-						}else{
-							for(i = row; (i > 0) && (map[i-1][col] == 0); --i){
-								map[i-1][col] = map[i][col];
-								map[i][col] = 0;
-								step = 1;
-							}
-						}
-					}
-				}
+				moveUp(row, col, i, &step);
 				break;
 			case 115:	//下移 s
 			case 106:	// j
 			case 66:	//下方向键
-				for(col = 0; col < 4; ++col){
-					for(row = 3; row >= 0;){
-						if(map[row][col] == 0){
-							--row;
-							continue;
-						}else{
-							for(i = row-1; i >= 0; --i){
-								if(map[i][col] == 0){
-									continue;
-								}else if(map[row][col] == map[i][col]){
-									map[row][col] += map[i][col];
-									map[i][col] = 0;
-									empty++;
-									break;
-								}else{
-									break;
-								}
-							}
-							row = i;
-						}
-					}
-				}
-				for(col = 0; col < 4; ++col){
-					for(row = 3; row >= 0; --row){
-						if(map[row][col] == 0){
-							continue;
-						}else{
-							for(i = row; (i < 3) && (map[i+1][col] == 0); ++i){
-								map[i+1][col] = map[i][col];
-								map[i][col] = 0;
-								step = 1;
-							}
-						}
-					}
-				}
+				moveDown(row, col, i, &step);
 				break;
 			case 'Q':
 			case 'q':
@@ -291,6 +152,7 @@ void play(){
 	}
 }
 
+//下边两个函数用于统计每一个方格周围的空的格子个数
 int cnt_one(int row, int col){
 	int value = 0;
 
@@ -351,4 +213,159 @@ int game_over(){
 	sleep(1);
 	endwin();
 	exit(1);
+}
+
+void moveLeft(int row, int col, int i, int *step){
+	for(row = 0; row < 4; ++row){
+		for(col = 0; col < 4;){
+			if(map[row][col] == 0){
+				col++;
+				continue;
+			}else{
+				for(i = col+1; i < 4; ++i){
+					if(map[row][col] == 0){
+						continue;
+					}else{
+						if(map[row][col] == map[row][i]){
+							map[row][col] += map[row][i];
+							map[row][i] = 0;
+							empty++;
+							break;
+						}else{
+							break;
+						}
+					}
+				}
+				col = i;
+			}
+		}
+	}
+
+	for(row = 0; row < 4; ++row){
+		for(col = 0; col < 4; col++){
+			if(map[row][col] == 0){
+				continue;
+			}else{
+				for(i = col; (i > 0) && (map[row][i-1] == 0); --i){
+					map[row][i-1] = map[row][i];
+					map[row][i] = 0;
+					*step = 1;
+				}
+			}
+		}
+	}
+}
+
+void moveRight(int row, int col, int i, int *step){
+	for(row = 0; row < 4; ++row){
+		for(col = 3; col >= 0;){
+			if(map[row][col] == 0){
+				col--;
+				continue;
+			}else{
+				for(i = col-1; i >= 0; i--){
+					if(map[row][i] == 0){
+						continue;
+					}else if(map[row][col] == map[row][i]){
+						map[row][col] += map[row][i];
+						map[row][i] = 0;
+						empty++;
+						break;
+					}else{
+						break;
+					}
+				}
+				col = i;
+			}
+		}
+	}
+	for(row = 0; row < 4; ++row){
+		for(col = 3; col >= 0; --col){
+			if(map[row][col] == 0){
+				continue;
+			}else{
+				for(i = col; (i < 3) && (map[row][i+1] == 0); ++i){
+					map[row][i+1] = map[row][i];
+					map[row][i] = 0;
+					*step = 1;
+				}
+			}
+		}
+	}
+}
+
+void moveUp(int row, int col, int i, int *step){
+	for(col = 0; col < 4; ++col){
+		for(row = 0; row < 4;){
+			if(map[row][col] == 0){
+				row++;
+				continue;
+			}else{
+				for(i = row+1; i < 4; ++i){
+					if(map[i][col] == 0){
+						continue;
+					}else if(map[row][col] == map[i][col]){
+						map[row][col] += map[i][col];
+						map[i][col] = 0;
+						empty++;
+						break;
+					}else{
+						break;
+					}
+				}
+				row = i;
+			}
+		}
+	}
+	for(col = 0; col < 4; ++col){
+		for(row = 0; row < 4; ++row){
+			if(map[row][col] == 0){
+				continue;
+			}else{
+				for(i = row; (i > 0) && (map[i-1][col] == 0); --i){
+					map[i-1][col] = map[i][col];
+					map[i][col] = 0;
+					*step = 1;
+				}
+			}
+		}
+	}
+}
+
+void moveDown(int row, int col, int i, int *step){
+	for(col = 0; col < 4; ++col){
+		for(row = 3; row >= 0;){
+			if(map[row][col] == 0){
+				--row;
+				continue;
+			}else{
+				for(i = row-1; i >= 0; --i){
+					if(map[i][col] == 0){
+						continue;
+					}else if(map[row][col] == map[i][col]){
+						map[row][col] += map[i][col];
+						map[i][col] = 0;
+						empty++;
+						break;
+					}else{
+						break;
+					}
+				}
+				row = i;
+			}
+		}
+	}
+	for(col = 0; col < 4; ++col){
+		for(row = 3; row >= 0; --row){
+			if(map[row][col] == 0){
+				continue;
+			}else{
+				for(i = row; (i < 3) && (map[i+1][col] == 0); ++i){
+					map[i+1][col] = map[i][col];
+					map[i][col] = 0;
+					*step = 1;
+				}
+			}
+		}
+	}
 }
