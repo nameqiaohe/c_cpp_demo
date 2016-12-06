@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-06 21:00:09
+# Last Modified: 2016-12-06 22:34:00
 ####################################################*/
 #include "game.h"
 
@@ -24,8 +24,8 @@ void init(){
 	int row, col;
 	empty = PANE;
 	srand(time(0));
-	col = rand() % 4;
-	row = rand() % 4;
+	col = rand() % COL;
+	row = rand() % ROW;
 
 	map[row][col] = 2;
 	empty--;
@@ -38,7 +38,7 @@ void draw(){
 
 	clear();
 
-	for(height = ROW_START; height < ROW_START+HEIGHT-1; height += 2){
+	for(height = ROW_START; height < ROW_START+HEIGHT+ROW_DISTANCE; height += 3){
 		for(width = COL_START; width < COL_START+WIDTH-1; ++width){
 			move(height, width);
 			addch('-');
@@ -46,8 +46,8 @@ void draw(){
 		}
 	}
 
-	for(width = COL_START; width < COL_START+WIDTH; width += DISTANCE){
-		for(height = ROW_START+1; height < ROW_START+HEIGHT-2; ++height){
+	for(width = COL_START; width < COL_START+WIDTH; width += COL_DISTANCE){
+		for(height = ROW_START+1; height < ROW_START+HEIGHT+1; ++height){
 			move(height, width);
 			addch('|');
 			refresh();
@@ -75,9 +75,9 @@ void draw_one(int row, int col){
 	}
 
 	m = 0;
-	k = (col+COL_START/DISTANCE+1)*DISTANCE - 1;
+	k = (col+COL_START/COL_DISTANCE+1)*COL_DISTANCE+1;
 	while(temp[m] != 0x00){
-		move(2*(row+DISTANCE)+1, k);
+		move(ROW_START + ROW_DISTANCE*(row + 1) + row, k);
 		addch(temp[m++]);
 		k--;
 	}
@@ -322,7 +322,7 @@ int cnt_one(int row, int col){
 }
 
 void cnt_value(int *new_row, int *new_col){
-	int max_col, max_row, col, row, value;
+	int col, row, value;
 	int max = 0;
 
 	max = cnt_one(*new_row, *new_col);

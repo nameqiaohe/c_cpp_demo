@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:11:20
-# Last Modified: 2016-12-06 21:01:23
+# Last Modified: 2016-12-06 22:33:32
 ####################################################*/
 #ifndef GAME_H
 #define GAME_H
@@ -15,17 +15,19 @@
 #include <unistd.h>
 #include <signal.h>
 
-#define PANE 16
+#define ROW 4
+#define COL 4
+
+#define PANE ROW*COL
 
 #define ROW_START 10
 #define COL_START 35
 
-#define WIDTH 22
-#define HEIGHT 10
-#define DISTANCE 5
+#define WIDTH 42
+#define HEIGHT 11
 
-#define ROW 4
-#define COL 4
+#define COL_DISTANCE 10
+#define ROW_DISTANCE 2
 
 int map[ROW][COL] = {0};
 int empty;
