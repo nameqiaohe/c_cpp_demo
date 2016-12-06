@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-06 22:34:00
+# Last Modified: 2016-12-06 22:39:56
 ####################################################*/
 #include "game.h"
 
@@ -38,6 +38,7 @@ void draw(){
 
 	clear();
 
+	//画四条横线
 	for(height = ROW_START; height < ROW_START+HEIGHT+ROW_DISTANCE; height += 3){
 		for(width = COL_START; width < COL_START+WIDTH-1; ++width){
 			move(height, width);
@@ -45,7 +46,8 @@ void draw(){
 			refresh();
 		}
 	}
-
+	
+	//画四条竖线
 	for(width = COL_START; width < COL_START+WIDTH; width += COL_DISTANCE){
 		for(height = ROW_START+1; height < ROW_START+HEIGHT+1; ++height){
 			move(height, width);
@@ -53,15 +55,17 @@ void draw(){
 			refresh();
 		}
 	}
-
+	
+	//给每一个框中填上数字
 	for(row = 0; row < ROW; ++row){
 		for(col = 0; col < COL; ++col){
-			draw_one(row, col);
+			draw_number(row, col);
 		}
 	}
 }
 
-void draw_one(int row, int col){
+//向方框中填入数字
+void draw_number(int row, int col){
 	int i, m, k, j;
 
 	char temp[5] = {0x00};
