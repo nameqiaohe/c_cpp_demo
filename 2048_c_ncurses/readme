@@ -1,0 +1,7 @@
+1、如果不在 main.c 中声明一下那 3个函数，编译时会报一个警告：
+	warning: implicit declaration of function ‘init’
+
+2、如果不声明那 3个函数，而是引入头文件game.h，编译时会报错：
+	multiple definition of `FILENAME'	(报一堆这样的错：变量重复定义，但是没有报函数重复定义)
+
+	疑问：如果将 game.h中的变量声明为 static，不知道还会不会报错
