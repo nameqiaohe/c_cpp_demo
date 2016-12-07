@@ -3,11 +3,12 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-07 23:02:23
+# Last Modified: 2016-12-07 23:25:57
 ####################################################*/
 #include "game.h"
 #include <string.h>
 
+#if 0
 int main(void){
 	init();
 	play();
@@ -15,6 +16,7 @@ int main(void){
 
 	return 0;
 }
+#endif
 
 void init(){
 	initscr();
