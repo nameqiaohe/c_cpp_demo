@@ -3,9 +3,10 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-06 23:08:35
+# Last Modified: 2016-12-07 23:02:23
 ####################################################*/
 #include "game.h"
+#include <string.h>
 
 int main(void){
 	init();
@@ -38,6 +39,8 @@ void draw(){
 
 	clear();
 
+	helpInfo();
+
 	//画四条横线
 	for(height = ROW_START; height < ROW_START+HEIGHT+ROW_DISTANCE; height += 3){
 		for(width = COL_START; width < COL_START+WIDTH-1; ++width){
@@ -59,13 +62,13 @@ void draw(){
 	//给每一个框中填上数字
 	for(row = 0; row < ROW; ++row){
 		for(col = 0; col < COL; ++col){
-			draw_number(row, col);
+			drawNumber(row, col);
 		}
 	}
 }
 
 //向方框中填入数字
-void draw_number(int row, int col){
+void drawNumber(int row, int col){
 	int i, m, k, j;
 
 	char temp[5] = {0x00};
@@ -101,27 +104,31 @@ void play(){
 			case 104:	// h
 			case 68:	//左方向键
 				moveLeft(row, col, i, &step);
+				++steps;
 					break;
 
 			case 100:	//右移 d
 			case 108:	// l
 			case 67:	//右方向键
 				moveRight(row, col, i, &step);
+				++steps;
 					break;
 
 			case 119:	//上移 w
 			case 107:	// k
 			case 65:	//上方向键
 				moveUp(row, col, i, &step);
+				++steps;
 				break;
 			case 115:	//下移 s
 			case 106:	// j
 			case 66:	//下方向键
 				moveDown(row, col, i, &step);
+				++steps;
 				break;
 			case 'Q':
 			case 'q':
-				game_over();
+				gameOver();
 				break;
 			default:
 				continue;
@@ -129,7 +136,7 @@ void play(){
 		}
 
 		if(empty <= 0){
-			game_over();
+			gameOver();
 		}
 
 		if((empty != old_empty) || (step == 1)){
@@ -138,7 +145,7 @@ void play(){
 				new_row = rand() % 4;
 			}while(map[new_row][new_col] != 0);
 
-			count_value(&new_row, &new_col);
+			countValue(&new_row, &new_col);
 
 			do{
 				number = rand() % 4;
@@ -153,7 +160,7 @@ void play(){
 }
 
 //统计每一个方格周围一圈空的格子个数
-int count_one(int row, int col){
+int countOne(int row, int col){
 	int value = 0;
 
 	if(row-1 > 0){
@@ -187,15 +194,15 @@ int count_one(int row, int col){
 	return value;
 }
 
-void count_value(int *new_row, int *new_col){
+void countValue(int *new_row, int *new_col){
 	int col, row, value;
 	int max = 0;
 
-	max = count_one(*new_row, *new_col);
+	max = countOne(*new_row, *new_col);
 	for(row = 0; row < ROW; ++row){
 		for(col = 0; col < COL; ++col){
 			if(!map[row][col]){	//if(map[row][col] == 0)
-				value = count_one(row, col);//优选周围空格子最多的方格填入数字
+				value = countOne(row, col);//优选周围空格子最多的方格填入数字
 				if(value > max && old_row != row && old_col != col){
 					//避免同一位置反复出现数字
 					*new_row = row;
@@ -209,7 +216,13 @@ void count_value(int *new_row, int *new_col){
 	}
 }
 
-int game_over(){
+int gameOver(){
+	if(bestScore < score){
+		bestScore = score;
+		bestScoreSteps = steps;
+		
+		writeBestScoreInfoToFile();
+	}
 	sleep(1);
 	endwin();
 	exit(1);
@@ -227,8 +240,11 @@ void moveLeft(int row, int col, int i, int *step){
 						continue;
 					}else{
 						if(map[row][col] == map[row][i]){
+							addScore(map[row][col]);
+
 							map[row][col] += map[row][i];
 							map[row][i] = 0;
+
 							empty++;
 							break;
 						}else{
@@ -267,8 +283,11 @@ void moveRight(int row, int col, int i, int *step){
 					if(map[row][i] == 0){
 						continue;
 					}else if(map[row][col] == map[row][i]){
+						addScore(map[row][col]);
+
 						map[row][col] += map[row][i];
 						map[row][i] = 0;
+
 						empty++;
 						break;
 					}else{
@@ -305,8 +324,11 @@ void moveUp(int row, int col, int i, int *step){
 					if(map[i][col] == 0){
 						continue;
 					}else if(map[row][col] == map[i][col]){
+						addScore(map[row][col]);
+
 						map[row][col] += map[i][col];
 						map[i][col] = 0;
+
 						empty++;
 						break;
 					}else{
@@ -343,8 +365,11 @@ void moveDown(int row, int col, int i, int *step){
 					if(map[i][col] == 0){
 						continue;
 					}else if(map[row][col] == map[i][col]){
+						addScore(map[row][col]);
+
 						map[row][col] += map[i][col];
 						map[i][col] = 0;
+
 						empty++;
 						break;
 					}else{
@@ -368,4 +393,84 @@ void moveDown(int row, int col, int i, int *step){
 			}
 		}
 	}
+}
+
+void helpInfo(){
+	move(2, COL_START);
+	addstr(UP_INFO);
+	refresh();
+
+	move(3, COL_START);
+	addstr(DOWN_INFO);
+	refresh();
+
+	move(4, COL_START);
+	addstr(LEFT_INFO);
+	refresh();
+
+	move(5, COL_START);
+	addstr(RIGHT_INFO);
+	refresh();
+
+	char str[MAX] = {0};
+	getBestScoreInfo();
+	move(7, COL_START);
+	addstr(BEST_SCORE_INFO);
+	refresh();
+	move(7, COL_START + strlen(BEST_SCORE_INFO));
+	sprintf(str, "%d", bestScore);
+	addstr(str);
+	refresh();
+
+	move(8, COL_START);
+	addstr(BEST_SCORE_STEPS);
+	refresh();
+	move(8, COL_START + strlen(BEST_SCORE_STEPS));
+	sprintf(str, "%d", bestScoreSteps);
+	addstr(str);
+	refresh();
+
+	move(9, COL_START);
+	addstr(CURRENT_SCORE);
+	refresh();
+}
+
+void addScore(int number){
+	score += number;
+}
+
+void refreshScore(){
+	
+}
+
+void getBestScoreInfo(){
+	char str[MAX] = {0};
+	FILE *fp = fopen(FILENAME, "r");
+	if(fp != NULL){
+		fgets(str, MAX, fp);
+		bestScore = atoi(str);
+
+		memset(str, '0', MAX);
+		fgets(str, MAX, fp);
+		bestScoreSteps = atoi(str);
+
+		fclose(fp);
+	}
+}
+
+void writeBestScoreInfoToFile(){
+	FILE *fp = fopen(FILENAME, "w");
+	if(fp == NULL){
+		return;
+	}
+
+	char str[MAX] = {0};
+	sprintf(str, "%d\n", bestScore);
+	fputs(str, fp);
+
+	memset(str, '0', MAX);
+	sprintf(str, "%d", bestScoreSteps);
+	fputs(str, fp);
+
+	fclose(fp);
 }
