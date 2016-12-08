@@ -6,4 +6,6 @@
 	error: multiple definition of `FILENAME'   (报一堆这样的错：变量重复定义，但是没有报函数重复定义)
      原因：game.h 中有定义，导致编译报错。
          头文件的大致格式：(注意，头文件中一般只能有申明，不能有定义，否则会出现重定义错误——multiple definition of xxx）
-     
+
+3、version_1_0中的代码由于在 game.h中定义了变量，导致编译时报了警告，version_1_1中的代码只在 game.h中声明了变量，在 game.c中定义变量(对变量作赋值/初始化)，
+	避免了编译报警告
