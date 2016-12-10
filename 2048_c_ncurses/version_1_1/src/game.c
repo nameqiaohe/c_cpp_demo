@@ -3,9 +3,9 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-08 22:05:07
+# Last Modified: 2016-12-10 14:58:42
 ####################################################*/
-#include "game.h"
+#include "../include/game.h"
 #include <string.h>
 
 void initValue(){
