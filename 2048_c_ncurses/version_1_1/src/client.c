@@ -3,17 +3,20 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-10 16:51:12
-# Last Modified: 2016-12-10 20:41:30
+# Last Modified: 2016-12-11 00:18:48
 ####################################################*/
 #include "../include/header.h"
 #include "../include/client.h"
 #include "../include/game.h"
 
 int main(int argc, char *argv[]){
-	int connfd;
+	initClientValue();
+
 	socklen_t socklen = sizeof(struct sockaddr_in);
 
 	struct sockaddr_in serverAddr;
+
+	signal(SIGCHLD, handler);	
 
 	connfd = socket(AF_INET, SOCK_STREAM, 0);
 	if(connfd < 0){
@@ -33,22 +36,29 @@ int main(int argc, char *argv[]){
 
 	printf("Welcome to here\n");
 
-	handle(connfd);
+	whileProcess(connfd);
+	sleep(2);
 	close(connfd);
 	printf("exit\n");
 
 	exit(0);
 }
 
-void handle(int connfd){
-	char sendBuf[BUF_SIZE] = {0};
-	char recvBuf[BUF_SIZE] = {0};
-	fd_set rset;
-
+void initClientValue(){
+	connfd = -1;
 	FD_ZERO(&rset);
 
+	bzero(sendBuf, BUF_SIZE);
+	bzero(recvBuf, BUF_SIZE);
+}
+
+void whileProcess(int connfd){
 	int maxfd = max(fileno(stdin), connfd) + 1;
-	int nread;
+
+	printf("press Enter, start 2048 game\n");
+
+	pthread_t tid;
+	int err;
 
 	while(1){
 		bzero(sendBuf, BUF_SIZE);
@@ -61,32 +71,39 @@ void handle(int connfd){
 			perror("select error");
 			continue;
 		}
-
-		//收到服务器响应
-		if(FD_ISSET(connfd, &rset)){
-			nread = read(connfd, recvBuf, BUF_SIZE);
-			if(nread < 0){
-				perror("read error");
-				break;
-			}else if(nread == 0){
-				printf("Server close the connection\n");
-				break;
-			}else{
-				//write(STDOUT_FILENO, recvBuf, nread);
-				exit(0);
-			}
-		}
+		
+		err = pthread_create(&tid, NULL, thread_func, NULL);
+		assert(!err);
 
 		//终端输入
 		if(FD_ISSET(fileno(stdin), &rset)){
-			if(fgets(sendBuf, BUF_SIZE, stdin) == NULL){
-				break;
-			}else{
-				//write(connfd, sendBuf, strlen(sendBuf));
-				init();
-				play();
-				endwin();
-			}
+			init();
+			play();
+			endwin();
 		}
+	}
+}
+
+void *thread_func(){
+	int nread;
+	//收到服务器响应
+	if(FD_ISSET(connfd, &rset)){
+		nread = read(connfd, recvBuf, BUF_SIZE);
+		if(nread < 0){
+			perror("read error");
+		}else if(nread == 0){
+			printf("Server close the connection\n");
+		}else{
+			write(STDOUT_FILENO, recvBuf, nread);
+			//raise(SIGINT);
+		}
+	}
+	return (void *)0;
+}
+
+void handler(int sig){
+	if(sig == SIGINT){
+		printf("exiting....\n");
+		exit(0);
 	}
 }

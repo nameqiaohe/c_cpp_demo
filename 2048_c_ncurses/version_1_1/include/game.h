@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:11:20
-# Last Modified: 2016-12-08 21:44:23
+# Last Modified: 2016-12-11 00:08:45
 ####################################################*/
 #ifndef GAME_H_
 #define GAME_H_
@@ -55,6 +55,8 @@ typedef struct Map{
 
 Map map;
 
+int gameOverFlag;
+
 void draw();
 void play();
 void init();
@@ -64,7 +66,7 @@ void getBestScoreInfo();
 void drawNumber(int row, int col);
 void countValue(int *new_row, int *new_col);
 int countOne(int row, int col);
-int gameOver();
+void gameOver();
 
 void moveLeft(int row, int col, int *step);
 void moveRight(int row, int col, int *step);

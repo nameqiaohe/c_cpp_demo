@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-10 14:58:42
+# Last Modified: 2016-12-11 00:22:20
 ####################################################*/
 #include "../include/game.h"
 #include <string.h>
@@ -14,6 +14,8 @@ void initValue(){
 	map.m_score = 0;
 	map.m_steps = 0;
 	map.m_empty = PANE;
+
+	gameOverFlag = 0;//0 表示正在运行，1 表示结束
 
 	memset(map.m_filename, 0, MAX);
 	strncpy(map.m_filename, INFOFILE, strlen(INFOFILE));
@@ -141,6 +143,7 @@ void play(){
 			case 'Q':
 			case 'q':
 				gameOver();
+				cbreak();
 				break;
 			default:
 				continue;
@@ -168,6 +171,9 @@ void play(){
 		}
 
 		draw();
+		if(gameOverFlag != 0){
+			break;
+		}
 	}
 }
 
@@ -228,16 +234,17 @@ void countValue(int *new_row, int *new_col){
 	}
 }
 
-int gameOver(){
+void gameOver(){
 	if(map.m_bestScore < map.m_score){
 		map.m_bestScore = map.m_score;
 		map.m_bestScoreSteps = map.m_steps;
 		
 		writeBestScoreInfoToFile();
 	}
+	gameOverFlag = 1;//gameOverFlag用于标识何时应该跳出while循环
 	sleep(1);
 	endwin();
-	exit(1);
+	//exit(1);	//之前的操作是：判断游戏结束时，直接退出，这样不太好
 }
 
 void moveLeft(int row, int col, int *step){

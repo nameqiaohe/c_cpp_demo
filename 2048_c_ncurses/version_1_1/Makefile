@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS += -Wall
+CFLAGS += -Wall	-lpthread
 LIBS += -lcurses
 
 #SRC = ${shell ls ./src/*.c}

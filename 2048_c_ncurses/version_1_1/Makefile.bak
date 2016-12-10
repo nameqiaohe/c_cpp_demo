@@ -1,0 +1,29 @@
+CC = gcc
+CFLAGS += -Wall
+LIBS += -lcurses
+
+SRC = ${shell ls ./src/*.c}
+SERVER_SRC = ${shell ls ./src/*.c | grep server}
+CLIENT_SRC = ${shell ls ./src/*.c | grep client}
+		
+RESULT_PATH =`pwd`
+RESULT=$(RESULT_PATH)/result/2048
+SERVER_RESULT = $(RESULT_PATH)/SERVER_SRC
+CLIENT_RESULT = $(RESULT_PATH)/CLIENT_SRC
+
+include env.mk
+
+output = server client
+cln = $(patsubst %,%-clean, $(output))
+
+all:$(output)
+
+$(output):
+	
+
+	@echo "make game : 2048"
+	$(CC) $(SRC) $(GDBFLAG) -o $(RESULT) $(CFLAGS) $(LIBS)
+
+.PHONY:all clean
+clean:$(cln)
+
