@@ -18,7 +18,7 @@
 #include <sys/select.h>
 
 #define SERVER_IP "127.0.0.1"
-#define SERVER_PORT 8888
+#define SERVER_PORT 8765
 
 #define BUF_SIZE 100
 #define BACK_LOG 5
