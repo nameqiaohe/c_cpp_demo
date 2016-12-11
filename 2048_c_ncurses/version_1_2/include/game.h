@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:11:20
-# Last Modified: 2016-12-11 20:58:44
+# Last Modified: 2016-12-11 21:47:01
 ####################################################*/
 #ifndef GAME_H_
 #define GAME_H_
@@ -36,6 +36,7 @@
 #define BEST_SCORE_INFO "BestScore : "
 #define BEST_SCORE_STEPS "BestScoreSteps : "
 #define CURRENT_SCORE "CurrentScoer : "
+#define TIP "Tip : When the max_number increased to 128, you win!"
 
 #define INFOFILE "bestInfo.txt"
 #define MAX 25

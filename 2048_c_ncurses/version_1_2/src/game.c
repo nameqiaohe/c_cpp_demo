@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-11 21:25:48
+# Last Modified: 2016-12-11 21:47:59
 ####################################################*/
 #include "../include/game.h"
 #include <string.h>
@@ -430,42 +430,46 @@ void moveDown(int row, int col, int *step){
 }
 
 void helpInfo(){
-	move(2, COL_START);
+	move(1, COL_START);
 	addstr(UP_INFO);
 	refresh();
 
-	move(3, COL_START);
+	move(2, COL_START);
 	addstr(DOWN_INFO);
 	refresh();
 
-	move(4, COL_START);
+	move(3, COL_START);
 	addstr(LEFT_INFO);
 	refresh();
 
-	move(5, COL_START);
+	move(4, COL_START);
 	addstr(RIGHT_INFO);
 	refresh();
 
 	char str[MAX] = {0};
 	getBestScoreInfo();
-	move(7, COL_START);
+	move(6, COL_START);
 	addstr(BEST_SCORE_INFO);
 	refresh();
-	move(7, COL_START + strlen(BEST_SCORE_INFO));
+	move(6, COL_START + strlen(BEST_SCORE_INFO));
 	sprintf(str, "%d", map.m_bestScore);
 	addstr(str);
 	refresh();
 
-	move(8, COL_START);
+	move(7, COL_START);
 	addstr(BEST_SCORE_STEPS);
 	refresh();
-	move(8, COL_START + strlen(BEST_SCORE_STEPS));
+	move(7, COL_START + strlen(BEST_SCORE_STEPS));
 	sprintf(str, "%d", map.m_bestScoreSteps);
 	addstr(str);
 	refresh();
 
-	move(9, COL_START);
+	move(8, COL_START);
 	addstr(CURRENT_SCORE);
+	refresh();
+
+	move(9, COL_START);
+	addstr(TIP);
 	refresh();
 }
 
