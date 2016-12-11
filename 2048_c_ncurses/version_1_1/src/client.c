@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-10 16:51:12
-# Last Modified: 2016-12-11 00:18:48
+# Last Modified: 2016-12-11 17:59:50
 ####################################################*/
 #include "../include/header.h"
 #include "../include/client.h"
@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
 
 	struct sockaddr_in serverAddr;
 
-	signal(SIGCHLD, handler);	
+	signal(SIGINT, handler);	
 
 	connfd = socket(AF_INET, SOCK_STREAM, 0);
 	if(connfd < 0){
@@ -37,7 +37,6 @@ int main(int argc, char *argv[]){
 	printf("Welcome to here\n");
 
 	whileProcess(connfd);
-	sleep(2);
 	close(connfd);
 	printf("exit\n");
 
@@ -59,6 +58,8 @@ void whileProcess(int connfd){
 
 	pthread_t tid;
 	int err;
+	err = pthread_create(&tid, NULL, thread_func, NULL);
+	assert(!err);
 
 	while(1){
 		bzero(sendBuf, BUF_SIZE);
@@ -70,16 +71,16 @@ void whileProcess(int connfd){
 		if(select(maxfd, &rset, NULL, NULL, NULL) == -1){
 			perror("select error");
 			continue;
-		}
-		
-		err = pthread_create(&tid, NULL, thread_func, NULL);
-		assert(!err);
+		}	
 
 		//终端输入
 		if(FD_ISSET(fileno(stdin), &rset)){
 			init();
 			play();
 			endwin();
+		}
+		if(gameOverFlag != 0){
+			break;
 		}
 	}
 }
@@ -95,7 +96,7 @@ void *thread_func(){
 			printf("Server close the connection\n");
 		}else{
 			write(STDOUT_FILENO, recvBuf, nread);
-			//raise(SIGINT);
+			raise(SIGINT);
 		}
 	}
 	return (void *)0;
@@ -103,6 +104,8 @@ void *thread_func(){
 
 void handler(int sig){
 	if(sig == SIGINT){
+		gameOver();
+		//gameOverFlag = 1;
 		printf("exiting....\n");
 		exit(0);
 	}
