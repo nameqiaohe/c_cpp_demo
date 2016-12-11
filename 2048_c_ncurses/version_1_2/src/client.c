@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-10 16:51:12
-# Last Modified: 2016-12-11 20:00:30
+# Last Modified: 2016-12-11 20:14:35
 ####################################################*/
 #include "../include/header.h"
 #include "../include/client.h"
@@ -53,8 +53,6 @@ void initClientValue(){
 }
 
 void whileProcess(int connfd){
-	printf("press Enter, start 2048 game\n");
-
 	pthread_t tid;
 	int err;
 	err = pthread_create(&tid, NULL, thread_func, NULL);//接收 server 端发来的消息
