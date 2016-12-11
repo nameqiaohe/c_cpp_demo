@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-10 16:51:12
-# Last Modified: 2016-12-11 17:59:50
+# Last Modified: 2016-12-11 19:18:28
 ####################################################*/
 #include "../include/header.h"
 #include "../include/client.h"
@@ -58,7 +58,7 @@ void whileProcess(int connfd){
 
 	pthread_t tid;
 	int err;
-	err = pthread_create(&tid, NULL, thread_func, NULL);
+	err = pthread_create(&tid, NULL, thread_func, NULL);//接收 server 端发来的消息
 	assert(!err);
 
 	while(1){
@@ -105,7 +105,6 @@ void *thread_func(){
 void handler(int sig){
 	if(sig == SIGINT){
 		gameOver();
-		//gameOverFlag = 1;
 		printf("exiting....\n");
 		exit(0);
 	}
