@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-10 15:22:29
-# Last Modified: 2016-12-11 20:10:47
+# Last Modified: 2016-12-11 21:16:19
 ####################################################*/
 #include "../include/server.h"
 
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
 		handle(clientSockets, maxfd, &rset, &allset);
 
 		if(!isAllClientsClosed()){
-			printf("All clients were closed, Goodbye!\n");
+			printf("\nAll clients were closed, Goodbye!\n");
 			break;
 		}
 	}

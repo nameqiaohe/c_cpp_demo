@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-10 16:51:12
-# Last Modified: 2016-12-11 20:14:35
+# Last Modified: 2016-12-11 21:25:04
 ####################################################*/
 #include "../include/header.h"
 #include "../include/client.h"
@@ -67,11 +67,11 @@ void whileProcess(int connfd){
 	endwin();
 
 	//若达到获胜标志则给其他 client 发送一个消息
-	if(map.m_maxNumber == WIN_FLAG){
+	if(map.m_maxNumber == map.m_winFlag){
 		sprintf(sendBuf, "%d", map.m_maxNumber);
 		write(connfd, sendBuf, strlen(sendBuf));
 
-		printf("\n\t\e[33m;41mCongratulations, You Win!\e[0m\n\n");//取胜，输出提示
+		printf("\n\t\e[1;5;33mCongratulations, You Win!\e[0m\n\n");//取胜，输出提示
 	}
 }
 
@@ -94,7 +94,7 @@ void *thread_func(){
 void handler(int sig){
 	if(sig == SIGINT){
 		gameOver();
-		printf("\n\tSorry, You Lose!\n\n");
+		printf("\n\t\e[1;32mSorry, You Lose!\e[0m\n\n");
 		printf("exiting....\n");
 		exit(0);
 	}
