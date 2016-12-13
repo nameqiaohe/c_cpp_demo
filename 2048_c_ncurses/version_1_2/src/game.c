@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-13 21:36:05
+# Last Modified: 2016-12-13 21:40:01
 ####################################################*/
 #include "../include/game.h"
 #include <string.h>
@@ -146,7 +146,7 @@ void play(){
 			case 'Q':
 			case 'q':
 				gameOver();
-				cbreak();
+				cbreak();	/* Line buffering disabled */
 				break;
 			default:
 				continue;
@@ -183,6 +183,7 @@ void play(){
 			break;
 		}
 	}
+	endwin();	/* End curses mode */
 }
 
 //统计每一个方格周围一圈空的格子个数
@@ -250,8 +251,8 @@ void gameOver(){
 		writeBestScoreInfoToFile();
 	}
 	gameOverFlag = 1;//gameOverFlag用于标识何时应该跳出while循环
-	sleep(1);
-	endwin();	/* End curses mode */
+	//sleep(1);
+	//endwin();	/* End curses mode */
 	//exit(1);	//之前的操作是：判断游戏结束时，直接退出，这样不太好
 }
 
