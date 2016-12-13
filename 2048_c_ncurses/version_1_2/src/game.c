@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-11 21:47:59
+# Last Modified: 2016-12-13 19:59:18
 ####################################################*/
 #include "../include/game.h"
 #include <string.h>
@@ -34,9 +34,9 @@ void initValue(){
 void init(){
 	initValue();
 
-	initscr();
-	cbreak();
-	noecho();
+	initscr();	/* Start curses mode */
+	cbreak();	/* Line buffering disabled */
+	noecho();	/* Don't echo() while we do getch */'
 	curs_set(0);
 
 	int row, col;
@@ -60,17 +60,15 @@ void draw(){
 	//画四条横线
 	for(height = ROW_START; height < ROW_START+HEIGHT+ROW_DISTANCE; height += 3){
 		for(width = COL_START; width < COL_START+WIDTH-1; ++width){
-			move(height, width);
-			addch('-');
-			refresh();
+			mvaddch(height, width, '-');
+			refresh();	/* Print it on to the real screen */
 		}
 	}
 
 	//画四条竖线
 	for(width = COL_START; width < COL_START+WIDTH; width += COL_DISTANCE){
 		for(height = ROW_START+1; height < ROW_START+HEIGHT+1; ++height){
-			move(height, width);
-			addch('|');
+			mvaddch(height, width, '|');
 			refresh();
 		}
 	}
@@ -100,8 +98,7 @@ void drawNumber(int row, int col){
 	m = 0;
 	k = (col+COL_START/COL_DISTANCE+1)*COL_DISTANCE+1;
 	while(temp[m] != 0x00){
-		move(ROW_START + ROW_DISTANCE*(row + 1) + row, k);
-		addch(temp[m++]);
+		mvaddch(ROW_START + ROW_DISTANCE*(row + 1) + row, k, temp[m++]);
 		k--;
 	}
 }
@@ -114,7 +111,7 @@ void play(){
 	while(1){
 		step = 0;
 		old_empty = map.m_empty;
-		ch = getch();
+		ch = getch();	/* Wait for user input */
 		switch(ch){
 			case 97:	//左 a
 			case 104:	// h
@@ -254,7 +251,7 @@ void gameOver(){
 	}
 	gameOverFlag = 1;//gameOverFlag用于标识何时应该跳出while循环
 	sleep(1);
-	endwin();
+	endwin();	/* End curses mode */
 	//exit(1);	//之前的操作是：判断游戏结束时，直接退出，这样不太好
 }
 
@@ -430,46 +427,36 @@ void moveDown(int row, int col, int *step){
 }
 
 void helpInfo(){
-	move(1, COL_START);
-	addstr(UP_INFO);
+	mvaddstr(1, COL_START, UP_INFO);
 	refresh();
 
-	move(2, COL_START);
-	addstr(DOWN_INFO);
+	mvaddstr(2, COL_START, DOWN_INFO);
 	refresh();
 
-	move(3, COL_START);
-	addstr(LEFT_INFO);
+	mvaddstr(3, COL_START, LEFT_INFO);
 	refresh();
 
-	move(4, COL_START);
-	addstr(RIGHT_INFO);
+	mvaddstr(4, COL_START, RIGHT_INFO);
 	refresh();
 
 	char str[MAX] = {0};
 	getBestScoreInfo();
-	move(6, COL_START);
-	addstr(BEST_SCORE_INFO);
+	mvaddstr(6, COL_START, BEST_SCORE_INFO);
 	refresh();
-	move(6, COL_START + strlen(BEST_SCORE_INFO));
 	sprintf(str, "%d", map.m_bestScore);
-	addstr(str);
+	mvaddstr(6, COL_START + strlen(BEST_SCORE_INFO), str);
 	refresh();
 
-	move(7, COL_START);
-	addstr(BEST_SCORE_STEPS);
+	mvaddstr(7, COL_START, BEST_SCORE_STEPS);
 	refresh();
-	move(7, COL_START + strlen(BEST_SCORE_STEPS));
 	sprintf(str, "%d", map.m_bestScoreSteps);
-	addstr(str);
+	mvaddstr(7, COL_START + strlen(BEST_SCORE_STEPS), str);
 	refresh();
 
-	move(8, COL_START);
-	addstr(CURRENT_SCORE);
+	mvaddstr(8, COL_START, CURRENT_SCORE);
 	refresh();
 
-	move(9, COL_START);
-	addstr(TIP);
+	mvaddstr(9, COL_START, TIP);
 	refresh();
 }
 
