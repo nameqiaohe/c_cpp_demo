@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-13 21:58:34
+# Last Modified: 2016-12-13 23:07:28
 ####################################################*/
 #include "../include/game.h"
 #include <string.h>
@@ -15,7 +15,7 @@ void initValue(){
 	map.m_steps = 0;
 	map.m_empty = PANE;
 	map.m_maxNumber = 2;
-	map.m_winFlag = 8;
+	map.m_winFlag = 64;
 
 	gameOverFlag = 0;//0 表示正在运行，1 表示结束
 
@@ -98,7 +98,7 @@ void drawNumber(int row, int col){
 	m = 0;
 	k = (col+COL_START/COL_DISTANCE+1)*COL_DISTANCE+1;
 	while(temp[m] != 0x00){
-		mvaddch(ROW_START + ROW_DISTANCE*(row + 1) + row, k, temp[m++]);
+		mvaddch(ROW_START + ROW_DISTANCE*(row + 1) + row, k, temp[m++] | A_BOLD);
 		k--;
 	}
 }

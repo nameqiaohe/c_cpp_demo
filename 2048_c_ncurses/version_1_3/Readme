@@ -9,4 +9,11 @@ Q：怎么样才能程序支持中文
 
 Q：read error: Connection reset by peer	这个问题是什么原因导致的？怎么解决？
 
+Q：当 server 端退出的时候，client 端没有按预期的退出，而是还能继续运行，接受 上下左右 按键操作
+	已通过信号处理解决了这个问题。
+	对比 version_1_2 和 version_1_3 中的代码查看差异
+
 1、当数字增加到128时，游戏结束
+
+2、可以用 或 的方式来给输出字符设置属性
+	mvaddch(ROW_START + ROW_DISTANCE*(row + 1) + row, k, temp[m++] | A_BOLD);	//添加粗体显示的属性
