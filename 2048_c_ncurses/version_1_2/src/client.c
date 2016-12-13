@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-10 16:51:12
-# Last Modified: 2016-12-11 21:25:04
+# Last Modified: 2016-12-13 20:10:52
 ####################################################*/
 #include "../include/header.h"
 #include "../include/client.h"
@@ -64,7 +64,6 @@ void whileProcess(int connfd){
 	//终端输入
 	init();
 	play();
-	endwin();
 
 	//若达到获胜标志则给其他 client 发送一个消息
 	if(map.m_maxNumber == map.m_winFlag){
