@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-11-29 22:15:59
-# Last Modified: 2016-12-13 19:59:18
+# Last Modified: 2016-12-13 21:36:05
 ####################################################*/
 #include "../include/game.h"
 #include <string.h>
@@ -36,7 +36,7 @@ void init(){
 
 	initscr();	/* Start curses mode */
 	cbreak();	/* Line buffering disabled */
-	noecho();	/* Don't echo() while we do getch */'
+	noecho();	/* Don't echo() while we do getch */
 	curs_set(0);
 
 	int row, col;
