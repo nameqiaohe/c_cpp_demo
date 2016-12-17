@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-10 16:51:12
-# Last Modified: 2016-12-13 22:04:06
+# Last Modified: 2016-12-17 18:16:01
 ####################################################*/
 #include "../include/header.h"
 #include "../include/client.h"
@@ -16,8 +16,12 @@ int main(int argc, char *argv[]){
 
 	struct sockaddr_in serverAddr;
 
-	signal(SIGINT, handler);	
-	signal(SIGUSR1, handler);	
+	if(signal(SIGINT, handler) == SIG_ERR){
+		printf("setup SIGINT failed!\n");
+	}
+	if(signal(SIGUSR1, handler) == SIG_ERR){
+		printf("setup SIGUSR1 failed!\n");
+	}
 
 	connfd = socket(AF_INET, SOCK_STREAM, 0);
 	if(connfd < 0){
