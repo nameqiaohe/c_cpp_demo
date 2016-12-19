@@ -17,3 +17,20 @@ Q：当 server 端退出的时候，client 端没有按预期的退出，而是�
 
 2、可以用 或 的方式来给输出字符设置属性
 	mvaddch(ROW_START + ROW_DISTANCE*(row + 1) + row, k, temp[m++] | A_BOLD);	//添加粗体显示的属性
+
+3、注册信号
+	if(signal(SIGINT, handler) == SIG_ERR){   
+		printf("setup SIGINT failed!\n");
+	}
+	if(signal(SIGUSR1, handler) == SIG_ERR){
+		printf("setup SIGUSR1 failed!\n");
+	}
+	发送信号的方式：
+		发送 SIGUSR1 信号
+			(1)	终端发送 kill -usr1 pid
+				或 kill -USR1 pid
+		
+			(2) 代码内发送 raise(SIGUSR1);
+		发送 SIGINT 信号
+			(1) 终端发送 Ctrl-C
+			(2) 代码内发送 raise(SIGINT)
