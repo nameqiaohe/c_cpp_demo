@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-26 21:51:48
-# Last Modified: 2017-01-16 23:09:58
+# Last Modified: 2017-01-16 23:45:44
 ####################################################*/
 #include <stdio.h>
 #include <unistd.h>
@@ -27,8 +27,8 @@ char *next(char *str){
 		return nextWithoutSpaceAndEnter(str);
 	}
 
-	token = *str++;
-	return str;
+	token = *str;
+	return ++str;
 }
 
 //读取过程中 跳过 空格(Space)、回车/换行(CR/LF)，即在输出结果中去掉了 空格、回车/换行
@@ -37,25 +37,29 @@ char *nextWithoutSpaceAndEnter(char *str){
 		str++;
 	}
 	token = *str;
-	return str;
+	return ++str;
 }
 
-void process(char *src, char **result){
-	src = next(src);
-	printf("token is : %c\n", token);
-	**result++ = token;
+void process(char *src, char *result){
+	char *ptr = src;
+	ptr = next(ptr);
+
+	printf("=== 1 === token is : %c\n", token);
+	*result = token;
+	result++;
 
 	while(token > 0){
 		if(token == '"'){
 			markFlag++;
-			src = next(src);
+			ptr = next(ptr);
 		}else if(markFlag > 0){
-			src = next(src);
+			ptr = next(ptr);
 		}else{
-			src = nextWithoutSpaceAndEnter(src);
+			ptr = nextWithoutSpaceAndEnter(ptr);
 		}
-		printf("token is : %c\n", token);
-		**result++ = token;
+		printf("=== 2 === token is : %c\n", token);
+		*result = token;
+		result++;
 	}
 }
 
@@ -78,7 +82,7 @@ int main(int argc, char *argv[]){
 	int fileSize = 0;
 	fseek(fp,0L,SEEK_END);  
 	fileSize = ftell(fp);
-	char *str = (char *)malloc(fileSize);
+	char *str = (char *)malloc(fileSize+1);
 	bzero(str, 0);
 	char *ptrStr = str;
 
@@ -95,8 +99,11 @@ int main(int argc, char *argv[]){
 	markFlag = 0;
 
 	char *resultStr = (char *)malloc(fileSize);
-	process(ptrStr, &resultStr);//process the string, delete the external space
-	printf("resultStr is : %s\n", resultStr);
+	bzero(resultStr, 0);
+	char *ptrRes = resultStr;
+
+	process(ptrStr, resultStr);//process the string, delete the external space
+	printf("resultStr is : %s\n", ptrRes);
 
 	//将读取到的内容输出到文件中，以便查看结果
 	FILE *fpWrite = fopen("readResult.txt", "w");
@@ -104,13 +111,14 @@ int main(int argc, char *argv[]){
 		perror("open file failed!");
 		exit(-1);
 	}
-	fputs(resultStr, fpWrite);
+	fputs(ptrRes, fpWrite);
 	fclose(fpWrite);
 
-	free(str);
-	str = NULL;
+	//释放内存
 	free(ptrStr);
-	ptrStr = NULL;
+	str = NULL;
+	free(ptrRes);
+	ptrRes = NULL;
 
 	mtrace();
 	return 0;
