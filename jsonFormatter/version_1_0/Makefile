@@ -11,10 +11,11 @@ include env.mk
 
 all:
 	@echo "conpiling ..."
-	$(CC) $(SRC) $(GDBFLAG) -o $(RESULT)/$(TARGET) $(CFLAGS)
+	for i in $(TARGET); do $(CC) $$i.c $(GDBFLAG) -o $(RESULT)/$$i $(CFLAGS); done
 
 .PHONY:all clean
 clean:
 	@echo "clean up"
-	rm -rf $(RESULT)/$(TARGET)
+	for i in $(TARGET); do rm -rf $(RESULT)/$$i; done
+	rm -rf $(RESULT)/readResult.txt
 

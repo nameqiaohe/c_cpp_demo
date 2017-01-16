@@ -3,3 +3,42 @@ hello
 world
 today
 "python study"  little
+
+void initValue(){
+	poolsize = 512 * 1024;
+	srcStr = (char *)malloc(poolsize);
+	if(!srcStr){//if(srcStr == NULL)
+		perror("malloc memory failed!");
+		exit(-1);
+	}
+	posSrc = srcStr;
+
+	resultStr = (char *)malloc(poolsize);
+	if(!resultStr){//if(srcStr == NULL)
+		perror("malloc memory failed!");
+		exit(-1);
+	}
+	posRes = resultStr;
+
+	markFlag = 0;
+}
+
+void next(){
+    if(markFlag == 2){
+	        markFlag = 0;
+	        nextWithoutSpaceAndEnter();
+	        return;
+	    }
+
+    token = *srcStr++;
+    return;
+}
+
+void nextWithoutSpaceAndEnter(){
+    while(srcStr && *srcStr && ((unsigned char)*srcStr <= 32)){
+	        srcStr++;
+	    }
+    token = *srcStr++;
+    return;
+}
+perror("malloc memory failed!");
