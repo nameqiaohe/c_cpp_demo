@@ -1,0 +1,105 @@
+1、涉及
+	(1) 数据结构
+	(2) Linux的一些系统调用
+	(3) ncurses库，命令行图形库，文本界面的屏幕绘图库。
+		编译时要加上 -lncurses
+
+2、环境准备
+	若没有安装ncurses：
+		方式一：sudo apt-get install libncurses5-dev
+		方式二：下载ncurses源码，configure/make/make install安装
+
+3、思路
+	(1) 关键点在于 响应键盘 和 定时绘图
+		结合Linux系统函数 和 ncurses库
+
+	(2) 如何使 bird看起来是一直在往前飞
+		假设一：移动bird
+			问题：会造成 bird超出屏幕范围
+
+		假设二：bird原地不动，让背景一直向 bird的方向移动。
+			这样就能让 bird看起来一直在飞(移动)，并且不会超出屏幕范围。
+
+4、界面
+	由于是在终端运行，所以会用到ASCII码(字符)
+		可以用 * 来表示背景里的柱子
+		用 o 来表示bird
+		用 空格 来表示可飞行区域
+		
+		在代码中定义常量：
+			#defien BIRD 'O'
+			#defien STONE '*'
+			#defien BLANK ' '
+
+5、一些变量
+	背景上的柱子用链表来表示
+		typedef struct node{
+			int x;
+			int y;
+			struct node *next;
+		}Node, *Lnode;
+
+	几个全局变量：
+		Lnode head, tail;	//柱子相关
+		int bird_x, bird_y;	//bird 的位置
+		int ticker;
+
+	一些函数：
+		void init();
+		void init_bird();
+		void init_draw();
+		void init_head();
+		void init_wall();
+		void drop(int sig);
+		int set_ticker(int n);
+
+6、定时移动
+	Linux中有信号这个概念，简单的理解：Linux内核有个定时器，它每隔一段时间就会向我们的程序发送一个信号，信号接收函数会被自动执行，我们可以在信号接收函数里移动背景中的柱子。
+
+	因为是内核发送信号，所以不会因为键盘按键而阻塞。
+
+7、关于 ncurses库函数的了解
+	www.cnblogs.com/wangkangluo1/archive/2012/05/29/2523577.html
+	www.cnblogs.com/Xiao_bird/archive/2019/07/21/1527947.html
+
+8、问题
+	(1) set_ticker() 存在的意义？
+		答：发送 SIGALRM，使 drop()能够不断地被执行。
+
+	(2) setitimer()	//系统函数
+		setitimer(ITIMER_REAL, &timerset, NULL);
+		每隔 timerset 发送一个 SIGALRM
+
+	(3) signal(SIGALRM, drop);	这里指定 收到SIGALRM，执行drop()函数
+
+9、补充
+	(1) struct node{
+			int x;
+			int y;
+			int gap;//这样就可以让每根柱子上下间隔不一样
+			struct node *next;
+		}
+		对 gap的赋值有两处：
+			在 init_wall()中
+			在 drop()中新建一个节点时
+
+			void init_wall(){
+				int i;
+				Lnode tmp, p;
+
+				p = head;
+				for(i = 19; i <= 99; i += 18){//将初始化的四根柱子 用链表串起来
+					tmp = (Node *)malloc(sizeof(Node));
+					tmp->x = i;
+					tmp->gap = rand % 2 + 3;//给 gap赋值，随机数[3, 5]
+
+					do{
+						tmp->y = rand() % 16;//计算每根柱子 上半段结束位置
+					}while(tmp->y < 5);
+
+					p->next = tmp;
+					tmp->next = NULL;
+					p = tmp;
+				}
+				tail = p;
+			}
