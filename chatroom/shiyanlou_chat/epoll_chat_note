@@ -32,10 +32,40 @@
 		server.cpp 服务端
 		client.cpp 客户端
 		utility.h 包含server 和 client斗湖用到的一些头文件、变量声明、函数、宏
+		
+		server、client共同的头文件：
+			<sys/types.h>
+			<sys/wait.h>
+			<sys/socket.h>
+			<arpa/inet.h>
+			<sys/epoll.h>
+			<fcntl.h>
+			<errno.h>
+			<stdio.h>
+			<stdlib.h>
+			<string.h>
+			<time.h>
 
 6、C/S模型
 	简单介绍一下 服务端、客户端采用的经典C/S模型，以及 TCP/IP
 
 	参考 C-S模型.png
 
+	TCP 服务端通信常规步骤：
+		Step 1：使用 socket() 创建 TCP 套接字 listenfd
+		Step 2：将创建的套接字 绑定到一个本地IP 和 端口上	bind()
+		Step 3：监听端口上的连接请求	listen()
+		Step 4：当请求到来时，接受连接请求，返回一个对应于此次连接的新的套接字	accept()
+		Step 5：用 accept() 返回的套接字 和 客户端进行通信
+			使用 write()/send()、recv()/read()
+		Step 6：返回，等待另一个连接请求
+		Step 7：通信结束，关闭套接字	close()
 
+	TCP 客户端通信的常规步骤：
+		Step 1：创建套接字	socket()
+		Step 2：使用 connect() 向服务端发起连接请求
+		Step 3：连接成功，进行通信
+			使用 write()/send()、recv()/read()
+		Step 4：通信结束，关闭套接字	close()
+	
+7、
