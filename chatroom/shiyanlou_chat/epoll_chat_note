@@ -68,4 +68,21 @@
 			使用 write()/send()、recv()/read()
 		Step 4：通信结束，关闭套接字	close()
 	
-7、
+7、阻塞、非阻塞socket
+	通常，一个文件描述符指定的文件/设备，有两种工作方式：阻塞、非阻塞。
+	
+	阻塞：当试图对该文件描述符进行读写时，若当前没有数据可读、或暂时不可写，程序就进入等待，直到有东西可读 或 可写为止。
+
+	非阻塞：如果没有数据可读、或者不可写，读写函数马上返回，而不会等待。
+
+	阻塞 与 非阻塞的区别：是否立即返回
+
+	将文件描述符设置为非阻塞方式：
+		int setnonblocking(int fd){
+			int retValue = fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0) | O_NONBLOCK);
+			if(retValue != -1){
+				return 0;
+			}else{
+				return -1;
+			}
+		}
