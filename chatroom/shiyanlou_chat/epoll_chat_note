@@ -86,3 +86,124 @@
 				return -1;
 			}
 		}
+
+8、epoll
+	当服务端在线人数越来越多时，会导致系统资源紧张，I/O 效率越来越慢。
+
+	epoll是 Linux内核为 处理大批句柄而改进的poll，是 Linux特有的 I/O函数。
+	特点：
+		(1) epoll 是 Linux下多路复用 I/O接口 select/poll的增强版本
+			其实现 和 使用方式 与 select/poll有很多不同，epoll通过一组函数来完成有关任务，而不是一个函数。
+
+		(2) epoll 之所以高效，是因为 epoll将用户关心的文件描述符上的事件 放入内核里的一个事件表中，而不是像 select/poll 每次调用都要重复传入文件描述符集 或 事件集。
+			比如：当一个事件(如 读操作)发生，epoll无需遍历整个被监听的描述符集，只要遍历那些被内核 I/O事件异步唤醒而加入就绪队列的描述符集合就可以了。
+			( select是采用轮询的方式实现，效率随着 fd数增加而降低 )
+
+		(3) epoll 有两种工作方式 (参考 epoll两种工作方式.png)
+			ET 边沿触发 edge-triggered			
+			LT 水平触发 level-triggered	(是select/poll使用的触发方式，效率低)
+			
+			通俗的理解：
+				例一：比如有一群女孩，有的很漂亮，有的很丑，现在小明要找漂亮的女孩聊天，LT就是要把这一群女孩都看一遍，才可以找到漂亮女孩(就绪事件)。
+				ET就是小明的小弟(内核)将 N个漂亮女孩的编号告诉小明，小明直接去找就好。这样更高效
+
+				例二：小明找女神聊天，女神不在家，采用非阻塞方式，小明每隔十分钟到女神家看一次 (select)
+				小弟打电话给小明，告诉他：女神回来了，快来吧 (epoll)
+
+		(4) Linux 所能打开的最大 fd触目：cat /proc/sys/fs/file-max
+			具体数值和 OS内存有关
+9、epoll的三个函数
+	(1) int epoll_create(int size);
+		创建一个epoll句柄，size用来告诉内核监听的数目，为epoll所支持的最大句柄数。
+		使用完epoll后，要关闭：close()
+
+	(2) int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+		返回值：成功返回 0，失败返回 -1
+		功能：epoll 事件注册
+		参数：
+			epfd：epoll_create()的返回值
+			op：动作，有3个宏表示
+				EPOLL_CTL_ADD：注册新的 fd 到 epfd。( 向事件表中注册fd上的事件 )
+				EPOLL_CTL_MOD：修改已注册的 fd 的监听事件。( 修改fd上的注册事件 )
+				EPOLL_CTL_DEL：从 epfd 中删除一个 fd。( 删除fd上的注册事件 )
+			fd：要监听的描述符
+			event：告诉内核要监听该事件
+				event结构：
+					struct epoll_event{
+						__uint32_t events;	//epoll events
+						epoll_data_t data;	//user data variable
+					}
+				其中events是描述事件类型 宏 的集合
+					EPOLLIN：对应的描述符可读(读事件)
+					EPOLLOUT：对应的fd可写
+					EPOLLPRI：对应的fd有紧急的数据可读
+					EPOLLERR：对应的fd发生错误
+					EPOLLHUP：对应的fd被挂断
+					EPOLLET：将epoll设为边沿触发模式
+					EPOLLONESHOT：只监听一次事件，当监听完这次事件之后，若还要继续监听这个socket，则要再次把这个socket加入EPOLL队列中。
+
+	(3) int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);
+		等待事件的发生，该函数返回要处理的 事件数目。
+		( 事件数目：就绪事件的数目，就是那个漂亮女孩数 )
+
+10、服务端使用epoll的步骤
+	Step 1：调用epoll_create() 在Linux内核中创建一个事件表。
+	Step 2：将文件描述符上的事件(监听套接字listenfd)添加到多创建的事件表中
+	Step 3：在主循环中，调用epoll_wait() 等待返回就虚的文件描述符集合
+	Step 4：分别处理就绪的事件集合
+			(在聊天室这个例子中共有两类事件：新用户连接、用户发来消息)
+
+
+一些功能要求
+	(1) 用户可以设置自己的名字
+	(2) 再发消息之前，
+		sprintf(msg, "%s:%s", name, buf);
+		然后将消息发送出去
+	(3) 可以设置输出颜色
+	(4) 客户端可以这么实现
+		创建一个线程，负责接收Server的消息，主线程负责接收stdin输入，并发送给Server
+
+一些转换方法
+	(1) 整数 <===> 点分十进制IP
+		点分十进制 ===> 整数：inet_pton(int af, const char *src, void *dst)	
+		整数 ===> 点分十进制：const char *inet_ntop(int af, void *src, char *dst, socketlen_t len);
+
+		例：char ip_dot_dec[20];	//存放点分十进制IP地址
+			struct in_addr s;	//IPV4地址结构
+			printf("input ip address:\n");	//输入IP地址
+			scanf("%s", &ip_dot_dec);
+
+			//转换
+			inet_pton(AF_INET, ip_dot_dec, (void *)&s);
+			printf("inet_pton : 0x%x\n", s.s_addr);
+
+			inet_ntop(AF_INET, (void *)&s, ip_dot_dec, 16);
+			printf("inet_ntop : %s\n", ip_dot_dec);
+
+		输入：127.0.0.1
+		输出：0x100007f
+			127.0.0.1
+
+select/poll/epoll比较：
+select返回的是 所关注的所有事件的集合，要在事件集中查找 才能判断出哪个套接字上有事件。
+
+对比 poll、epoll
+	poll：
+		int ret = poll(fd, MAX_SOCKET, -1);
+		for(i = 0; i < MAX_SOCKET; i++){
+			if(fd[i].revents | POLLIN){
+				int socket = fd[i].fd;
+				process....
+			}
+		}
+
+	epoll：
+		int ret = epoll_wait(epfd, events, MAX_SOCKET, -1);
+		for(i = 0; i < ret; i++){
+			int socket = events[i].data.fd;
+			process....
+		}
+
+	(2) 
+	(3) 
+	(4) 
