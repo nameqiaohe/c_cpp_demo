@@ -209,7 +209,18 @@
 
 		char 类型数据只占一个字节，不存在大小端问题，这也是一般将数据缓冲区定义成 char类型的原因之一。
 
-	
+		对于 IP地址、端口号这些非 char型数据，必须要在数据发送网络之前 将其转换成大端，在接收到数据之后，转换成符合接收端主机的存储模式。
+		发送端主机 ==> 数据转换成大端 ==> 网络 ==> 接收端主机 ==> 转换成本机存储模式
+
+	(8) inet_addr()、inet_aton()、inet_network()
+		功能：将点分IP 转换成 二进制IP
+
+		头文件：#include <sys/socket.h>
+				#include <netinet/in.h>
+				#include <arpa/inet.h>
+		区别：inet_aton	返回 网络字节序 的二进制IP
+				inet_addr	返回 网络字节序 的二进制IP
+				inet_network	返回主机端字节序 的二进制IP
 一些功能要求
 	(1) 用户可以设置自己的名字
 	(2) 再发消息之前，
