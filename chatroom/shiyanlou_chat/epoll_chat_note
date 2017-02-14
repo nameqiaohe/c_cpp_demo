@@ -153,7 +153,63 @@
 	Step 4：分别处理就绪的事件集合
 			(在聊天室这个例子中共有两类事件：新用户连接、用户发来消息)
 
+11、如何将一个socket描述符添加到 内核事件表中
+	void addfd(int epfd, int fd, bool enable_set){
+		struct epoll_event ev;
+		ev.data.fd = fd;
+		ev.events = EPOLLIN;
 
+		if(enable_set){
+			ev.events = EPOLLIN | EPOLLET;
+		}
+
+		epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev);
+
+		setnonblocking(fd);
+		printf("fd added to epoll!\n");
+	}
+	//将文件描述符 fd 添加到epfd标识的内核事件表中，并注册 EPOLLIN 和 EPOLLET事件，最后将描述符设置为非阻塞方式。
+	//EPOLLIN 是数据可读事件
+	//EPOLLET 表明工作方式
+
+12、客户端实现
+	(1) 参考 客户端实现.png
+
+	(2) int pipe(int fd[2]);	//创建管道，fd[0] 父进程读，fd[1] 子进程写
+
+	(3) 子进程负责接收用户输入，当检测到用户输入 exit 或 EXIT时，退出chatroom
+		这里忽略大小写：
+			strncasecmp(const char *s1, char char *s2, size_t n);
+			第三个参数要传入 strlen(s2)
+			例：char *str = "abc";
+				sizeof(str) ===> 4
+				strlen(str) ===> 3
+
+	(4) 当有客户端连接时，要将 clientfd加入到 客户端列表中，用于 broadcast，以便其他用户能够收到消息。
+		clients_list.push_back(clientfd);	或者用其他方式添加
+
+	(5) 当 Server端关闭导致 client端都关闭之后，在命令行再次输入时会出现错误：write error:Bad address
+		怎么解决？？？
+
+	(6) 当关闭 Server之后，再次启动 Server时，有时会报错：bind error:Address already in use
+		解决方法：
+			int opt = 1;
+			listenfd = socket(...);
+			if(setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0){
+				perror("set sock reuse error");
+				exit(-1);
+			}
+
+	(7) htons()、ntohs()...
+		功能：大小端字节序转换
+
+		TCP/IP 规定网络上传输数据用大端。
+		大端：高字节数据 存放在 低地址，低字节数据 存放在 高地址
+		小端：高字节数据 存放在 高地址，低字节数据 存放在 低地址
+
+		char 类型数据只占一个字节，不存在大小端问题，这也是一般将数据缓冲区定义成 char类型的原因之一。
+
+	
 一些功能要求
 	(1) 用户可以设置自己的名字
 	(2) 再发消息之前，
@@ -185,24 +241,35 @@
 			127.0.0.1
 
 select/poll/epoll比较：
-select返回的是 所关注的所有事件的集合，要在事件集中查找 才能判断出哪个套接字上有事件。
+	(1) select返回的是 所关注的所有事件的集合，要在事件集中查找 才能判断出哪个套接字上有事件。
 
-对比 poll、epoll
-	poll：
-		int ret = poll(fd, MAX_SOCKET, -1);
-		for(i = 0; i < MAX_SOCKET; i++){
-			if(fd[i].revents | POLLIN){
-				int socket = fd[i].fd;
+	(2) 对比 poll、epoll
+		poll：
+			int ret = poll(fd, MAX_SOCKET, -1);
+			for(i = 0; i < MAX_SOCKET; i++){
+				if(fd[i].revents | POLLIN){
+					int socket = fd[i].fd;
+					process....
+				}
+			}
+
+		epoll：
+			int ret = epoll_wait(epfd, events, MAX_SOCKET, -1);
+			for(i = 0; i < ret; i++){
+				int socket = events[i].data.fd;
 				process....
 			}
-		}
 
-	epoll：
-		int ret = epoll_wait(epfd, events, MAX_SOCKET, -1);
-		for(i = 0; i < ret; i++){
-			int socket = events[i].data.fd;
-			process....
-		}
+	(3) 对比 select、epoll
+		相同：select、epoll都通过 某种结构体 来告诉内核来监听哪些 fd上的哪些event，并使用该结构体类型的参数来获取内核处理的结果。
+		区别：
+			(a) select中的 fd_set(只是一个集合)没有将 fd和 event绑定。
+				而且每次使用 select之前要重置 fd_set。
+			(b) epoll在内核中维护一个事件表(这个事件表用红黑树来实现的)。
+				epoll_wait每次都从内核事件表中 取出 用户注册事件，不用从用户态 ===> 内核态的拷贝。
+			(c) select采用轮询方式来检测就绪事件
+				epoll采用回调方式检测就绪事件。
+
 
 	(2) 
 	(3) 
