@@ -221,7 +221,15 @@
 		区别：inet_aton	返回 网络字节序 的二进制IP
 				inet_addr	返回 网络字节序 的二进制IP
 				inet_network	返回主机端字节序 的二进制IP
-一些功能要求
+
+	(9) 在 server/client 退出之前(正常/异常退出)，关闭所有的套接字、描述符。
+
+13、绑定 IP地址的 3种方式
+	(1) server.sin_addr.s_addr = htonl(INADDR_ANY);
+	(2) inet_aton("12.0.0.1", &server.sin_addr);
+	(3) server.sin_addr_s_addr - inet_addr("127.0.0.1");
+
+14、一些功能要求
 	(1) 用户可以设置自己的名字
 	(2) 再发消息之前，
 		sprintf(msg, "%s:%s", name, buf);
@@ -230,7 +238,7 @@
 	(4) 客户端可以这么实现
 		创建一个线程，负责接收Server的消息，主线程负责接收stdin输入，并发送给Server
 
-一些转换方法
+15、一些转换方法
 	(1) 整数 <===> 点分十进制IP
 		点分十进制 ===> 整数：inet_pton(int af, const char *src, void *dst)	
 		整数 ===> 点分十进制：const char *inet_ntop(int af, void *src, char *dst, socketlen_t len);
