@@ -17,5 +17,6 @@ all:
 clean:
 	@echo "clean up"
 	for i in $(TARGET); do rm -rf $(RESULT)/$$i; done
-	rm -rf $(RESULT)/readResult.txt
+	rm -rf $(RESULT)/readResult*
+	rm -rf $(RESULT)/memoryTrace*
 

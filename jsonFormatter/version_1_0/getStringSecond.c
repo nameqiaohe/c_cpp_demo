@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2016-12-26 21:51:48
-# Last Modified: 2017-01-16 23:45:44
+# Last Modified: 2017-02-23 21:12:14
 ####################################################*/
 #include <stdio.h>
 #include <unistd.h>
@@ -12,13 +12,22 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include<mcheck.h>
-#include <strings.h>
+#include <string.h>
+#include <libgen.h>
+
+#define LEN 100
 
 char token;
 int markFlag;
 
 char *next(char *str);
 char *nextWithoutSpaceAndEnter(char *str);
+void setResultFilePath(char *dst, char *dirPath, const char *filename);
+
+void setResultFilePath(char *dst, char *dirPath, const char *filename){
+	strncpy(dst, dirPath, strlen(dirPath));
+	strncat(dst, filename, strlen(filename));
+}
 
 //读取下一个字符
 char *next(char *str){
@@ -64,8 +73,13 @@ void process(char *src, char *result){
 }
 
 int main(int argc, char *argv[]){
+	char *dirPath = dirname(argv[0]);
+
+	char memoryTraceResultFile[LEN] = {0};
+	setResultFilePath(memoryTraceResultFile, dirPath, "/memoryTraceResult.txt");
 	//检测是否有内存泄漏
-	setenv("MALLOC_TRACE", "memoryTraceResult", 1);//trace_result是保存检测结果的文件
+	//setenv("MALLOC_TRACE", "memoryTraceResult", 1);//trace_result是保存检测结果的文件
+	setenv("MALLOC_TRACE", memoryTraceResultFile, 1);//trace_result是保存检测结果的文件
 	mtrace();
 
 	if(argc < 2){
@@ -105,8 +119,11 @@ int main(int argc, char *argv[]){
 	process(ptrStr, resultStr);//process the string, delete the external space
 	printf("resultStr is : %s\n", ptrRes);
 
+	char readResultFile[LEN] = {0};
+	setResultFilePath(readResultFile, dirPath, "/readResult.txt");
 	//将读取到的内容输出到文件中，以便查看结果
-	FILE *fpWrite = fopen("readResult.txt", "w");
+	//FILE *fpWrite = fopen("readResult.txt", "w");
+	FILE *fpWrite = fopen(readResultFile, "w");
 	if(fpWrite == NULL){
 		perror("open file failed!");
 		exit(-1);
