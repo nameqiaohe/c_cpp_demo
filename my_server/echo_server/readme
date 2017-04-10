@@ -1,0 +1,10 @@
+一个简单的例子：echo server
+
+1、一次只能连接处理一个客户端
+	可以用 telnet来测试：telnet 192.168.1.119 8888
+
+2、accept()
+	注意这个函数中的后两个参数可以传入NULL
+
+3、在while 循环里不能关掉 listen_fd
+	否则会出现：代码编译通过，能运行起来，但是用telnet连接之后，无法将收到的消息发回给客户端，当客户端在Ctrl-C退出的时候server端在accept()处报错：echo_server: error calling accept()!
