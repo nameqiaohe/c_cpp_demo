@@ -1,0 +1,51 @@
+一个简单的例子：echo server
+
+1、一次只能连接处理一个客户端
+	可以用 telnet来测试：telnet 192.168.1.119 8888
+
+2、accept()
+	注意这个函数中的后两个参数可以传入NULL
+
+3、在while 循环里不能关掉 listen_fd
+	否则会出现：代码编译通过，能运行起来，但是用telnet连接之后，无法将收到的消息发回给客户端，当客户端在Ctrl-C退出的时候server端在accept()处报错：echo_server: error calling accept()!
+
+4、
+	struct hostent  
+	{  
+		char *h_name;         //正式主机名  
+		char **h_aliases;     //主机别名  
+		int h_addrtype;       //主机IP地址类型：IPV4-AF_INET  
+		int h_length;         //主机IP地址字节长度，对于IPv4是四字节，即32位  
+		char **h_addr_list;   //主机的IP地址列表  
+	};  
+==========================================================================
+1、一个套接字是连接的一个端点
+	套接字 ==> IP + 16位整数端口
+
+	当 客户端 发起连接请求时，套接字中的端口是由内核自动分配的---临时端口。
+	服务端 套接字中的端口通常是 知名端口。/etc/services包含这台机器提供的服务及它们的知名端口号的列表。
+
+	一个连接 是由 两端的套接字地址唯一确定的 ---- 套接字对 socket pair(client_addr:client_port, server_addr:server_port)
+
+2、IP地址、端口号都是以网络字节序(大端)存放的。
+	大端：数据的高字节保存在内存的低地址中
+	小端：数据的高字节保存在内存的高地址中
+
+3、套接字函数
+	socket() 默认情况下，内核会认为socket() 创建的描述符对应于主动套接字active socket，比如客户端中调用的socket()。
+	服务端调用listen() 告诉内核，描述符是被服务端使用的。
+
+	connect() 函数会阻塞
+
+	bind() 告诉内核 将服务器套接字地址 和 套接字描述符 sock_fd 联系起来
+
+	listen() 将sock_fd 从主动套接字 转为 监听套接字listening socket。
+	backlog参数：告诉内核在开始拒绝连接请求之前，应该放入队列中等待的未完成连接请求数量
+
+	accept() 等待来自客户端的连接请求到达listen_fd
+	参数二：填写客户端的套接字地址
+	返回一个已连接描述符connected descriptor
+
+	setsockopt() 默认地，一个重启的服务器将在大约30s 内拒绝客户端的连接请求（严重阻碍了调试）
+
+4、fgets在标准输入上遇到 EOF时，或者用户在键盘上键入Ctrl-D，或者在一个重定向的输入文件中用尽了所有文本行时，终止。
