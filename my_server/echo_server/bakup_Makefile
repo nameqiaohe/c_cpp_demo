@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS += -g -Wall	-lpthread
 
-SERVER_SRC = ${shell ls *.c | grep -v "echo_client.c"}
-CLIENT_SRC = ${shell ls *.c | grep -v "echo_server.c"}
+SRC = ${shell ls *.c}
+TARGET = ${shell ls *.c | sed 's/\.c//g'}
 
 # Makefile 内置变量
 DIR = $(PWD)
@@ -22,13 +22,11 @@ endif
 
 	@echo "compiling ..."
 #for i in $(TARGET); do $(CC) $$i.c $(GDBFLAG) -o $(RESULT_PATH)/$$i $(CFLAGS); done
-	$(CC) $(SERVER_SRC) -o $(RESULT_PATH)/echo_server
-	$(CC) $(CLIENT_SRC) -o $(RESULT_PATH)/echo_client
+	$(CC) $(SRC) -o $(RESULT_PATH)/echo_server
 
 .PHONY:all clean
 clean:
 	@echo "clean up"
 #for i in $(TARGET); do rm -rf $(RESULT_PATH)/$$i; done
 	rm -rf $(RESULT_PATH)/echo_server
-	rm -rf $(RESULT_PATH)/echo_client
 

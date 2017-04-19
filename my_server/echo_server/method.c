@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-09 15:34:41
-# Last Modified: 2017-04-09 15:45:30
+# Last Modified: 2017-04-19 13:38:47
 ####################################################*/
 #include "method.h"
 #include <sys/socket.h>
@@ -21,7 +21,7 @@ ssize_t read_line(int fd, void *ptr, size_t maxlen){
 		rc = read(fd, &c, 1);
 		if(rc == 1){
 			*buffer++ = c;
-			if(c == '\n'){
+			if(c == '\n'){//客户端发来的数据中必须要有一个回车符\n，否则会阻塞在这里
 				break;
 			}
 		}else if(rc == 0){

@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-09 15:03:33
-# Last Modified: 2017-04-10 20:30:13
+# Last Modified: 2017-04-19 13:48:22
 ####################################################*/
 #include "server_header.h"
 
@@ -71,7 +71,8 @@ int main(int argc, char *argv[]){
 	socklen_t len = sizeof(client_addr);
 	*/
 
-	 /*  Enter an infinite loop to respond to client requests and echo input  */
+	/* 只能跟一个client交互一次 */
+	/*  Enter an infinite loop to respond to client requests and echo input  */
 	while(1){
 		/*  Wait for a connection, then accept() it  */
 		conn_fd = accept(listen_fd, NULL, NULL);
@@ -81,9 +82,12 @@ int main(int argc, char *argv[]){
 			exit(EXIT_FAILURE);
 		}
 
+		memset(&buffer, 0, sizeof(buffer));
 		/*  Retrieve an input line from the connected socket then simply write it back to the same socket.     */
 		read_line(conn_fd, buffer, MAX_LINE-1);
+		fprintf(stdout, "-----read-----%s\n", buffer);
 		write_line(conn_fd, buffer, strlen(buffer));
+		fprintf(stdout, "-----write-----%s\n", buffer);
 
 		/*  Close the connected socket  */
 		ret_val = close(conn_fd);
