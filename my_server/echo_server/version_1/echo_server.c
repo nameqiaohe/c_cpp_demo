@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-09 15:03:33
-# Last Modified: 2017-04-19 13:48:22
+# Last Modified: 2017-04-19 18:40:25
 ####################################################*/
 #include "server_header.h"
 
@@ -85,9 +85,7 @@ int main(int argc, char *argv[]){
 		memset(&buffer, 0, sizeof(buffer));
 		/*  Retrieve an input line from the connected socket then simply write it back to the same socket.     */
 		read_line(conn_fd, buffer, MAX_LINE-1);
-		fprintf(stdout, "-----read-----%s\n", buffer);
 		write_line(conn_fd, buffer, strlen(buffer));
-		fprintf(stdout, "-----write-----%s\n", buffer);
 
 		/*  Close the connected socket  */
 		ret_val = close(conn_fd);
