@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-09 15:34:41
-# Last Modified: 2017-04-20 19:32:26
+# Last Modified: 2017-04-20 21:27:18
 ####################################################*/
 #include "header.h"
 #include <errno.h>
@@ -97,11 +97,13 @@ static ssize_t rio_read(rio_t *rp, char *usrbuf, size_t n){
 		}
 	}
 
+#if 0
 	cnt = n;
 	if((size_t)rp->rio_cnt < n){
 		cnt = rp->rio_cnt;
 	}
-
+#endif
+	cnt = ((size_t)rp->rio_cnt < n) ? rp->rio_cnt : n;
 	/* Copy min(n, rp->rio_cnt) bytes from internal buf to user buf */
 	memcpy(usrbuf, rp->rio_bufptr, cnt);//从缓冲区中未读取的字节开始拷贝
 	rp->rio_bufptr += cnt;//读取后需要更新指针
