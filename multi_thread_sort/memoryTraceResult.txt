@@ -1,0 +1,6 @@
+= Start
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7ffbbf11211d] + 0x20c15c0 0x228
+@ ./bucket_sort_read_file:[0x401171] + 0x20c17f0 0x68
+@ /lib/x86_64-linux-gnu/libc.so.6:(fclose+0x113)[0x7ffbbf1117c3] - 0x20c15c0
+@ ./bucket_sort_read_file:[0x4012af] - 0x20c17f0
+= End
