@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-26 00:09:54
-# Last Modified: 2017-04-26 17:59:07
+# Last Modified: 2017-04-26 18:03:11
 ####################################################*/
 /* 桶排序
  * 1、桶个数
@@ -122,7 +122,7 @@ void bucket_sort(int arr[], int arr_len){
 	int bucket_real_len = 0;
 	pthread_t tid[BUCKET_NUM];
 	PARAM param[BUCKET_NUM];
-	//桶内作排序，排好序的值对应放回原数组
+	//多线程 桶内作排序，排好序的值对应放回原数组
 	for(i = 0; i < BUCKET_NUM; i++){//若每个桶中的值不止一个，需要在该桶内做一个排序
 		bucket_real_len = 0;
 		for(j = 0; j < BUCKET_SIZE; j++){//计算该桶中有几个值
@@ -137,11 +137,12 @@ void bucket_sort(int arr[], int arr_len){
 
 		int err = pthread_create(&tid[i], NULL, thread_func, (void *)&param[i]);
 	}
-
+	//主线程等待直到子线程排序完毕
 	for(i = 0; i < BUCKET_NUM; i++){
 		pthread_join(tid[i], NULL);
 	}
 
+	//合并数据
 	for(i = 0; i < BUCKET_NUM; i++){
 		//将排好序的值 放入原数组中对应的位置
 		for(j = 0; j < BUCKET_SIZE; j++){
@@ -152,7 +153,7 @@ void bucket_sort(int arr[], int arr_len){
 			}
 		}
 		//清理桶中的数据，若是动态分配的内存，需要清理数据
-		clear_arr(buckets[i], bucket_real_len);
+		//clear_arr(buckets[i], bucket_real_len);
 	}	
 
 	finish = clock();
