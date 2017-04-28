@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 16:32:29
-# Last Modified: 2017-04-28 10:32:29
+# Last Modified: 2017-04-28 11:42:45
 ####################################################*/
 #include "ftp_serve.h"
 
@@ -172,11 +172,13 @@ int ftp_serve_check_user(char *user, char *pass){
 	}
 
 	/* 读取".auth" 文件中的用户名和密码，验证用户身份的合法性 */
-	while((num_read = getline(&line, &len, fp)) != -1){
-		memset(buf, 0, MAXSIZE);
-		
+	while((num_read = getline(&line, &len, fp)) != -1){// getline() 具体用法参看 man getline
+		memset(buf, 0, MAXSIZE);	
 		strcpy(buf, line);
+
 		token = strtok(buf, " ");
+		strcpy(username, token);
+
 		if(token != NULL){
 			token = strtok(NULL, " ");
 			strcpy(passwd, token);
@@ -184,7 +186,7 @@ int ftp_serve_check_user(char *user, char *pass){
 
 		trim_str(passwd, (int)strlen(passwd));/* 去除字符串中的空格和换行符 */
 
-		if((strcmp(user, username) == 0) && strcmp(pass, passwd) == 0){
+		if((strncmp(user, username, strlen(user)) == 0) && strncmp(pass, passwd, strlen(pass)) == 0){
 			auth = 1;//匹配成功，标志变量 auth = 1，并返回
 			break;
 		}

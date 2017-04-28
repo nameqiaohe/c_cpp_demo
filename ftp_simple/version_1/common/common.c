@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 17:42:47
-# Last Modified: 2017-04-28 10:26:36
+# Last Modified: 2017-04-28 12:05:47
 ####################################################*/
 #include "common.h"
 
@@ -40,7 +40,7 @@ int socket_create(int port){
 		return -1;
 	}
 
-	ret_val = listen(sock_fd, 5);
+	ret_val = listen(sock_fd, BACK_LOG);
 	if(ret_val < 0){
 		close(sock_fd);
 		perror("socket_create : listen() error");

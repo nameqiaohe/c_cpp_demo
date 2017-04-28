@@ -11,7 +11,7 @@ RESULT_PATH = $(DIR)/$(RESULT)
 
 all:$(TARGET)
 
-ftp_client:$(OBJS)
+$(TARGET):$(OBJS)
 ifeq ("result", $(wildcard $(RESULT)))  # if语句的前边不能用tab，否则会报错Syntax error: word unexpected (expecting ")")
 	@echo "already has the directory : result"                             
 else

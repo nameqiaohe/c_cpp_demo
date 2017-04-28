@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 18:18:38
-# Last Modified: 2017-04-28 10:14:25
+# Last Modified: 2017-04-28 11:38:04
 ####################################################*/
 #include "ftp_client.h"
 
@@ -99,7 +99,7 @@ int ftp_client_get(int sock_fd, int sock_control, char *arg){
 
 /* 打开数据连接 */
 int ftp_client_open_conn(int sock_conn){
-	int sock_listen = socket_accept(CLIENT_PORT);
+	int sock_listen = socket_create(CLIENT_PORT);
 
 	int ack = 1;
 	if((send(sock_conn, (char *)&ack, sizeof(ack), 0)) < 0){
@@ -127,9 +127,15 @@ int ftp_client_list(int sock_fd, int sock_conn){
 
 	memset(buf, 0, sizeof(buf));
 
+	unsigned int tip_flag = 0;
+
 	/* 接收服务器传来的数据 */
 	while((num_recvd = recv(sock_fd, buf, MAXSIZE, 0)) > 0){
-		printf("ftp_client_list : recv msg from server : %s", buf);
+		if(tip_flag == 0){
+			printf("ftp_client_list : recv msg from server :\n");
+			tip_flag++;
+		}
+		printf("%s", buf);
 		memset(buf, 0, sizeof(buf));
 	}
 
@@ -186,6 +192,7 @@ void ftp_client_login(){
 	/* 从终端获得密码 */
 	fflush(stdout);
 	char *pass = getpass("Password: ");
+	//printf("ftp_client_login : input pass is : %s\n", pass);
 
 	/* 发送密码到服务器 */
 	strcpy(cmd.code, "PASS");

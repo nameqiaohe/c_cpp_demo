@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 17:36:28
-# Last Modified: 2017-04-28 10:10:59
+# Last Modified: 2017-04-28 12:05:39
 ####################################################*/
 #ifndef COMMON_H
 #define COMMON_H
@@ -28,6 +28,8 @@
 #define DEBUG 1
 #define MAXSIZE 512
 #define CLIENT_PORT 30001
+
+#define BACK_LOG 1024
 
 struct command{
 	char arg[255];

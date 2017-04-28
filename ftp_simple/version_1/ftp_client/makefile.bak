@@ -3,8 +3,7 @@ CFLAGS := -Wall -g -Os
 
 TARGET := ftp_client
 SHDIR := ../common
-SRC := ${shell ls *.c}
-SRC += ${shell ls $(SHDIR)/*.c}
+OBJS := $(TARGET).o $(SHDIR)/common.o
 
 DIR = $(PWD)
 RESULT = result
@@ -19,9 +18,14 @@ else
 	@mkdir -p $(RESULT_PATH)
 endif
 
-	@$(CC) -o $(RESULT_PATH)/$(TARGET) $(SRC) $(CFLAGS)
+	@$(CC) -o $(RESULT_PATH)/$(TARGET) $(OBJS) $(CFLAGS)
+
+$(OBJS): %.o:%.c
+	@$(CC) -c $(CFLAGS) $< -o $@
 
 .PHONY:
 clean:
+	@rm -f ftp_client.o
+	@rm -f $(SHDIR)/common.o
 	@rm -rf $(RESULT_PATH)
 	@echo Cleaning up

@@ -1,0 +1,43 @@
+================= 相关函数 =====================
+1、getline() 函数的用法
+	
+2、getpass()
+
+========== 对应的返回码所代表的含义 ============
+150 文件状态良好，打开数据连接 File status okay; about to open data connection.
+
+200	命令执行正常结束. Command okay.
+
+220 新连接的用户的服务已就绪 Service ready for new user.
+
+221 控制连接关闭 Service closing control connection.
+
+226 关闭数据连接，请求的文件操作成功 Closing data connection. Requested file action successful (for example, file transfer or file abort).
+
+230 用户已登入。 如果不需要可以登出。User logged in, proceed. Logged out if appropriate
+
+331 用户名存在，需要输入密码 User name okay, need password.
+
+430	认证失败
+
+502 命令未被执行 Command not implemented.
+
+550 请求操作未被执行，文件不可用。Requested action not taken. File unavailable (e.g., file not found, no access).
+
+==================== 待补充 ====================
+1、对用户名和密码进行加密传输
+	客户端接收到用户名和密码，加密之后发送到服务端
+
+	服务端接受的消息，解密得到用户名、密码之后，进行校验
+
+2、客户端对提示符 和 输出信息之间用颜色区分
+	提示符用 红色
+	输出信息用 白色(即不做颜色设置)
+
+3、扩展命令
+	如输入 list、ll、ls，服务端当作 LIST 都可以解析
+		具体做法：在客户端将这几条命令 和 LIST对应起来就可以
+
+4、客户端登陆时，用户名、密码校验次数改为3次
+
+5、可以考虑将是否支持命令的校验放在服务端，若命令不支持，返回 202
