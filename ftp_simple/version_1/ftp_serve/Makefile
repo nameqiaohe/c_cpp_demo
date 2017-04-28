@@ -3,7 +3,7 @@ CFLAGS := -Wall -g -Os
 
 TARGET = ftp_serve
 SHDIR := ../common
-OBJS := ftp_serve.o $(SHDIR)/common.o
+OBJS := $(TARGET).o $(SHDIR)/common.o
 
 DIR = $(PWD)
 RESULT = result
