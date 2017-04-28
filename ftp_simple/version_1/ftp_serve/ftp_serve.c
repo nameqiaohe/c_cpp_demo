@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 16:32:29
-# Last Modified: 2017-04-27 18:27:16
+# Last Modified: 2017-04-28 10:32:29
 ####################################################*/
 #include "ftp_serve.h"
 
@@ -25,7 +25,6 @@ int main(int argc, char *argv[]){
 		exit(EXIT_FAILURE);
 	}
 
-	int ret_val;
 	//循环接受不同的客户机请求
 	while(1){
 		sock_control = socket_accept(sock_listen);
@@ -172,7 +171,7 @@ int ftp_serve_check_user(char *user, char *pass){
 		exit(EXIT_FAILURE);
 	}
 
-	/* 读取".auth" 文件中的用户名和密码，验证用户身份的合法性 */""
+	/* 读取".auth" 文件中的用户名和密码，验证用户身份的合法性 */
 	while((num_read = getline(&line, &len, fp)) != -1){
 		memset(buf, 0, MAXSIZE);
 		

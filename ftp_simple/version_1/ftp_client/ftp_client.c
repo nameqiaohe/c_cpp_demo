@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 18:18:38
-# Last Modified: 2017-04-27 19:20:23
+# Last Modified: 2017-04-28 10:14:25
 ####################################################*/
 #include "ftp_client.h"
 
@@ -86,7 +86,7 @@ int ftp_client_get(int sock_fd, int sock_control, char *arg){
 	FILE *fp = fopen(arg, "w");//创建并打开名字为 arg 的文件
 
 	while((size = recv(sock_fd, data, MAXSIZE, 0)) > 0){
-		fwrite(data, 1, size, fd);
+		fwrite(data, 1, size, fp);
 	}
 
 	if(size < 0){
@@ -222,7 +222,7 @@ int main(int argc, char *argv[]){
 	char *host = argv[1];//所要连接的服务器主机名
 	char *port = argv[2];//所要链接到服务器程序端口号
 
-	bzero(&hints, 0, sizeof(struct addrinfo));
+	bzero(&hints, sizeof(struct addrinfo));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	s = getaddrinfo(host, port, &hints, &res);
@@ -232,7 +232,7 @@ int main(int argc, char *argv[]){
 	}
 
 	/* 找到对应的服务器地址并连接 */
-	for(rp = res; rp !+ NULL; rp = rp->ai_next){
+	for(rp = res; rp != NULL; rp = rp->ai_next){
 		sock_control = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
 		if(sock_control < 0){
 			continue;
@@ -249,5 +249,61 @@ int main(int argc, char *argv[]){
 
 	freeaddrinfo(rp);
 
-	printf()
+	/* 连接成功，输出提示信息 */
+	printf("main : Connected to %s\n", host);
+	print_reply(read_reply());
+	
+	/* 获取用户的名字、密码 */
+	ftp_client_login();
+
+	while(1){//循环，直到用户输入 quit
+		/* 得到用户输入的命令 */
+		if(ftp_client_read_cmd(buf, sizeof(buf), &cmd) < 0){
+			printf("main : Invalid command\n");
+			continue;
+		}
+
+		/* 发送命令到服务器 */
+		if(send(sock_control, buf, (int)strlen(buf), 0) < 0){
+			close(sock_control);
+			exit(EXIT_FAILURE);
+		}
+
+		rc = read_reply();//读取服务器响应（服务器是否可以支持该命令）
+
+		/* 221--Service closing control connection. 控制连接关闭 */
+		if(rc == 221){//退出命令
+			print_reply(221);
+			break;
+		}
+
+		/* 502--Command not implemented. 命令未被执行*/
+		if(rc == 502){
+			printf("main : %d Invalid command\n", rc);//非法的输入，输出错误信息
+		}else{//命令合法
+			sock_fd = ftp_client_open_conn(sock_control);
+			if(sock_fd < 0){
+				perror("main : ftp_client_open_conn() error");
+				exit(EXIT_FAILURE);
+			}
+
+			if(strcmp(cmd.code, "LIST") == 0){
+				ftp_client_list(sock_fd, sock_control);
+			}else if(strcmp(cmd.code, "RETR") == 0){
+				if(read_reply() == 550){/* 请求操作未被执行，文件不可用 */
+					print_reply(550);
+					close(sock_fd);
+					continue;
+				}
+
+				ftp_client_get(sock_fd, sock_control, cmd.arg);
+				print_reply(read_reply());
+			}
+
+			close(sock_fd);
+		}
+	}
+
+	close(sock_control);
+	return 0;
 }

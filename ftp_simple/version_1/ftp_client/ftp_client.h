@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 18:14:57
-# Last Modified: 2017-04-27 18:18:29
+# Last Modified: 2017-04-28 10:13:05
 ####################################################*/
 #ifndef FTP_CLIENT_H
 #define FTP_CLIENT_H
@@ -24,6 +24,6 @@ int ftp_client_list(int sock_fd, int sock_conn);
 
 int ftp_client_send_cmd(struct command *cmd_str);
 
-int ftp_client_login();
+void ftp_client_login();
 
 #endif

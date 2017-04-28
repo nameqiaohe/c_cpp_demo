@@ -3,13 +3,13 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 17:36:28
-# Last Modified: 2017-04-27 17:42:43
+# Last Modified: 2017-04-28 10:10:59
 ####################################################*/
 #ifndef COMMON_H
 #define COMMON_H
 
 #include <arpa/inet.h>
-#include <atype.h>
+#include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -23,7 +23,7 @@
 
 #include <sys/wait.h>
 #include <sys/socket.h>
-#include <sys/trpes.h>
+#include <sys/types.h>
 
 #define DEBUG 1
 #define MAXSIZE 512

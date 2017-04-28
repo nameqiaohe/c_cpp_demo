@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 17:42:47
-# Last Modified: 2017-04-27 18:14:32
+# Last Modified: 2017-04-28 10:26:36
 ####################################################*/
 #include "common.h"
 
@@ -55,7 +55,7 @@ int socket_create(int port){
 int socket_accept(int sock_listen){
 	int sock_fd;
 	struct sockaddr_in client_addr;
-	socketlen_t client_len = sizeof(client_addr);
+	socklen_t client_len = sizeof(client_addr);
 
 	sock_fd = accept(sock_listen, (struct sockaddr *)&client_addr, &client_len);
 	if(sock_fd < 0){
@@ -78,7 +78,7 @@ int socket_connect(int port, char *host){
 	}
 
 	//设置协议地址
-	memset(&server_addr, 0. sizeof(server_addr));
+	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(port);
 	server_addr.sin_addr.s_addr = inet_addr(host);
@@ -134,7 +134,7 @@ int send_response(int sock_fd, int rc){
 
 void read_input(char *buf, int size){
 	char *index = NULL;
-	bzero(buf, 0, size);
+	bzero(buf, size);
 
 	if(fgets(buf, size, stdin) != NULL){
 		index = strchr(buf, '\n');
