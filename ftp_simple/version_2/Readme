@@ -1,0 +1,126 @@
+================= 相关函数 =====================
+1、getline() 函数的用法
+	
+2、getpass()
+
+3、通过套接字描述符来获取自己的IP地址和连接对端的IP地址
+	#include<sys/socket.h>
+
+	(1) int getsockname(int sockfd, struct sockaddr *localaddr, socklen_t *addrlen);//获取与某个套接字关联的本地协议地址
+		在未调用bind函数的TCP客户端程序上，可以通过调用getsockname()函数获取由内核赋予该连接的本地IP地址和本地端口号
+
+	(2) int getpeername(int sockfd, struct sockaddr *peeraddr, socklen_t *addrlen);//获取与某个套接字关联的外地协议地址
+		在TCP的服务器端accept成功后，通过getpeername()函数来获取当前连接的客户端的IP地址和端口号
+
+4、inet_ntop、inet_pton
+	(1) int inet_pton(int family, const char * strptr, void * addrptr); //将点分十进制串转换成网络字节序二进制值
+		参数：
+			arg1：AF_INET 或者 AF_INET6
+			arg2：一个指向点分十进制串的指针
+			arg3：一个指向转换后的网络字节序的二进制值的指针
+
+		返回值：
+			1 	成功
+			0 	输入的不是有效的表达式
+			-1 	失败
+
+	(2) const char * inet_ntop(int family, const void *addrptr, char * strptr, size_t len);//将网络字节序二进制值转换成点分十进制串
+		参数：
+			arg1：AF_INET 或者 AF_INET6
+			arg2：一个指向网络字节序的二进制值的指针
+			arg3：一个指向转换后的点分十进制串的指针
+			arg4：指定目标的大小，以免函数溢出其调用者的缓冲区
+================== FTP协议 ======================
+1、FTP（File Transfer Protocol，文件传输协议） 是 TCP/IP 协议组中的协议之一。针对不同的 OS之间文件传输问题，建立的一个统一的文件传输协议。
+	包括两个组成部分：
+		(1) FTP服务器 用来存储文件，用户可以使用FTP客户端通过FTP协议访问位于FTP服务器上的资源
+		(2) FTP客户端 
+
+2、默认情况下FTP协议使用TCP端口中的 20和21这两个端口
+	20用于传输数据
+	21用于传输控制信息
+
+	是否使用20作为传输数据的端口与FTP使用的传输模式有关：
+		如果采用主动模式，那么数据传输端口就是20
+		如果采用被动模式，则具体最终使用哪个端口要服务器端和客户端协商决定
+
+3、一个完整的FTP文件传输需要建立两种类型的连接
+	(1) 传输用于查询/下载文件的命令，称为控制连接
+		客户端希望与FTP服务器建立上传下载的数据传输时，它首先向服务器的TCP 21端口发起一个建立连接的请求，FTP服务器接受来自客户端的请求，完成连接的建立过程，这样的连接就称为FTP控制连接。
+
+	(2) 真正的文件传输，称为数据连接
+		FTP控制连接建立之后，即可开始传输文件，传输文件的连接称为FTP数据连接。FTP数据连接就是FTP传输数据的过程，它有两种传输模式：主动、被动
+
+4、传输模式
+	主动或者被动的区别在于：谁发起了连接请求
+
+	(1) Standard (也就是 PORT方式，主动方式) -- 参考 PORT_mode.jpg
+		Client向 Server的FTP端口（默认是21）发送连接请求，Server接受连接，建立一条命令链路。当需要传送数据时，Client在命令链路上用PORT命令告诉服务器：“我打开了XXXX端口，你过来连接我”。于是 Server从20端口向 Client的XXXX端口发送连接请求，建立一条数据链路来传送数据。
+
+	(2) Passive (也就是 PASV方式，被动方式) -- 参考 PASV_mode.jpg
+		Client向 Server的FTP端口（默认是21）发送连接请求，Server接受连接，建立一条命令链路。当需要传送数据时，Server在命令链路上用PASV命令告诉客户端：“我打开了XXXX端口，你过来连接我”。于是 Client向 Server的XXXX端口发送连接请求，建立一条数据链路来传送数据。
+================== 命令 ========================
+1、ftp登录
+	
+2、显示文件信息
+	list、ls、dir
+
+3、下载文件(默认下载到当前目录)
+	get <filename>
+
+4、上传文件
+	put <filename>
+
+5、多文件下载
+	mget
+
+6、多文件上传
+	mput
+
+7、帮助
+	help
+
+8、退出
+	quit
+
+========== 对应的返回码所代表的含义 ============
+150 文件状态良好，打开数据连接 File status okay; about to open data connection.
+
+200	命令执行正常结束. Command okay.
+
+220 新连接的用户的服务已就绪 Service ready for new user.
+
+221 控制连接关闭 Service closing control connection.
+
+226 关闭数据连接，请求的文件操作成功 Closing data connection. Requested file action successful (for example, file transfer or file abort).
+
+230 用户已登入。 如果不需要可以登出。User logged in, proceed. Logged out if appropriate
+
+331 用户名存在，需要输入密码 User name okay, need password.
+
+430	认证失败
+
+502 命令未被执行 Command not implemented.
+
+550 请求操作未被执行，文件不可用。Requested action not taken. File unavailable (e.g., file not found, no access).
+
+==================== 待补充 ====================
+1、对用户名和密码进行加密传输
+	客户端接收到用户名和密码，加密之后发送到服务端
+
+	服务端接受的消息，解密得到用户名、密码之后，进行校验
+
+2、客户端对提示符 和 输出信息之间用颜色区分
+	提示符用 红色
+	输出信息用 白色(即不做颜色设置)
+
+3、扩展命令
+	如输入 list、ll、ls，服务端当作 LIST 都可以解析
+		具体做法：在客户端将这几条命令 和 LIST对应起来就可以
+
+4、客户端登陆时，用户名、密码校验次数改为3次
+
+5、可以考虑将是否支持命令的校验放在服务端，若命令不支持，返回 202
+
+==================== 待改正  ====================
+1、客户端 main函数中建立连接的流程里边的那些参数能否改为一般的的参数？？？
