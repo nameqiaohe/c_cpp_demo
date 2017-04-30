@@ -27,10 +27,10 @@
 4、传输模式
 	主动或者被动的区别在于：谁发起了连接请求
 
-	(1) Standard (也就是 PORT方式，主动方式)
+	(1) Standard (也就是 PORT方式，主动方式) -- 参考 PORT_mode.jpg
 		Client向 Server的FTP端口（默认是21）发送连接请求，Server接受连接，建立一条命令链路。当需要传送数据时，Client在命令链路上用PORT命令告诉服务器：“我打开了XXXX端口，你过来连接我”。于是 Server从20端口向 Client的XXXX端口发送连接请求，建立一条数据链路来传送数据。
 
-	(2) Passive (也就是 PASV方式，被动方式)
+	(2) Passive (也就是 PASV方式，被动方式) -- 参考 PASV_mode.jpg
 		Client向 Server的FTP端口（默认是21）发送连接请求，Server接受连接，建立一条命令链路。当需要传送数据时，Server在命令链路上用PASV命令告诉客户端：“我打开了XXXX端口，你过来连接我”。于是 Client向 Server的XXXX端口发送连接请求，建立一条数据链路来传送数据。
 ================== 命令 ========================
 1、ftp登录
