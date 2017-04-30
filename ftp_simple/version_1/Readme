@@ -3,6 +3,33 @@
 	
 2、getpass()
 
+3、通过套接字描述符来获取自己的IP地址和连接对端的IP地址
+	#include<sys/socket.h>
+
+	(1) int getsockname(int sockfd, struct sockaddr *localaddr, socklen_t *addrlen);//获取与某个套接字关联的本地协议地址
+		在未调用bind函数的TCP客户端程序上，可以通过调用getsockname()函数获取由内核赋予该连接的本地IP地址和本地端口号
+
+	(2) int getpeername(int sockfd, struct sockaddr *peeraddr, socklen_t *addrlen);//获取与某个套接字关联的外地协议地址
+		在TCP的服务器端accept成功后，通过getpeername()函数来获取当前连接的客户端的IP地址和端口号
+
+4、inet_ntop、inet_pton
+	(1) int inet_pton(int family, const char * strptr, void * addrptr); //将点分十进制串转换成网络字节序二进制值
+		参数：
+			arg1：AF_INET 或者 AF_INET6
+			arg2：一个指向点分十进制串的指针
+			arg3：一个指向转换后的网络字节序的二进制值的指针
+
+		返回值：
+			1 	成功
+			0 	输入的不是有效的表达式
+			-1 	失败
+
+	(2) const char * inet_ntop(int family, const void *addrptr, char * strptr, size_t len);//将网络字节序二进制值转换成点分十进制串
+		参数：
+			arg1：AF_INET 或者 AF_INET6
+			arg2：一个指向网络字节序的二进制值的指针
+			arg3：一个指向转换后的点分十进制串的指针
+			arg4：指定目标的大小，以免函数溢出其调用者的缓冲区
 ================== FTP协议 ======================
 1、FTP（File Transfer Protocol，文件传输协议） 是 TCP/IP 协议组中的协议之一。针对不同的 OS之间文件传输问题，建立的一个统一的文件传输协议。
 	包括两个组成部分：
