@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 18:18:38
-# Last Modified: 2017-04-29 14:00:08
+# Last Modified: 2017-05-01 21:11:44
 ####################################################*/
 #include "ftp_client.h"
 
@@ -175,8 +175,8 @@ void ftp_client_login(){
 	char user[256];
 	char *pass;
 
-	int count = 0;
-	while(count < LOGIN_COUNT){
+	int count = LOGIN_COUNT;
+	while(count > 0){
 		bzero(user, 256);
 
 		/* 从终端获取用户名 */
@@ -208,11 +208,14 @@ void ftp_client_login(){
 		switch(rc){
 			case 430:
 				printf("ftp_client_login : Invalid username/password.\n");
-				printf("ftp_client_login : Try Again\n");
-				count++;
+				count--;
+				if(count > 0){
+					printf("ftp_client_login : Try Again, You can also try %d times\n", count);
+				}
 				continue;
 			case 230:
 				printf("ftp_client_login : Successful login.\n");
+				count = -1;//登录成功，count置为 -1
 				break;
 			default:
 				perror("ftp_client_login : error reading msg from server");
@@ -220,7 +223,7 @@ void ftp_client_login(){
 				break;
 		}
 	}
-	if(count == LOGIN_COUNT){
+	if(count == 0){
 		printf("ftp_client_login : Sorry, Please confirm the correctness of the aoccount and password.\n");
 		exit(EXIT_FAILURE);
 	}
