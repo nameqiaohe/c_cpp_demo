@@ -3,9 +3,76 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 17:42:47
-# Last Modified: 2017-04-28 12:05:47
+# Last Modified: 2017-05-03 01:30:42
 ####################################################*/
 #include "common.h"
+
+int encrypt_string(char *input_str, char **encrypt_str){
+	AES_KEY aes;
+	unsigned char key[AES_BLOCK_SIZE];//AES_BLOCK_SIZE = 16
+	unsigned char iv[AES_BLOCK_SIZE];
+	unsigned int len;// encrypt length (in multiple of AES_BLOCK_SIZE)
+	unsigned int i;
+
+	len = 0;
+	if((strlen(input_str) + 1) % AES_BLOCK_SIZE == 0){
+		len = strlen(input_str) + 1;
+	}else{
+		len = ((strlen(input_str) + 1) / AES_BLOCK_SIZE + 1) * AES_BLOCK_SIZE;
+	}
+
+	//generate AES 128-bit key
+	for(i = 0; i < AES_BLOCK_SIZE; ++i){
+		key[i] = 32 + i;
+	}
+
+	for(i = 0; i < AES_BLOCK_SIZE; ++i){
+		iv[i] = 0;
+	}
+
+	if(AES_set_encrypt_key(key, 128, &aes) < 0){
+		fprintf(stderr, "Unable to set encryption key in AES\n");
+		exit(EXIT_FAILURE);
+	}
+
+	*encrypt_str = (unsigned char *)calloc(len, sizeof(unsigned char));
+	if (*encrypt_str == NULL) {
+		fprintf(stderr, "Unable to allocate memory for encrypt_string\n");
+		exit(-1);
+	}
+
+	AES_cbc_encrypt(input_str, *encrypt_str, len, &aes, iv, AES_ENCRYPT);
+
+	return len;
+}
+
+void decrypt_string(char *encrypt_str, char **decrypt_str, int len){
+	unsigned char key[AES_BLOCK_SIZE];        // AES_BLOCK_SIZE = 16
+	unsigned char iv[AES_BLOCK_SIZE];        // init vector
+	AES_KEY aes;
+	int i;
+
+	for (i = 0; i < AES_BLOCK_SIZE; ++i) {
+		key[i] = 32 + i;
+	}
+
+	*decrypt_str = (unsigned char*)calloc(len, sizeof(unsigned char));
+	if (*decrypt_str == NULL) {
+		fprintf(stderr, "Unable to allocate memory for decrypt_string\n");
+		exit(-1);
+	}
+
+	for (i = 0; i < AES_BLOCK_SIZE; ++i) {
+		iv[i] = 0;
+	}
+
+	if (AES_set_decrypt_key(key, 128, &aes) < 0) {
+		fprintf(stderr, "Unable to set decryption key in AES\n");
+		exit(-1);
+	}
+
+	AES_cbc_encrypt(encrypt_str, *decrypt_str, len, &aes, iv, AES_DECRYPT);
+}
 
 /* 创建监听套接字
  * 返回值：错误返回 -1，正确返回套接字描述符*/

@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 16:32:29
-# Last Modified: 2017-04-30 23:11:03
+# Last Modified: 2017-05-03 01:10:45
 ####################################################*/
 #include "ftp_serve.h"
 
@@ -200,37 +200,38 @@ int ftp_serve_check_user(char *user, char *pass){
 int ftp_serve_login(int sock_control){
 	char buf[MAXSIZE];
 	char username[MAXSIZE];
+	char temp_username[MAXSIZE];
 	char passwd[MAXSIZE];
+	char temp_passwd[MAXSIZE];
 	bzero(buf, MAXSIZE);
 	bzero(username, MAXSIZE);
 	bzero(passwd, MAXSIZE);
+	bzero(temp_username, MAXSIZE);
+	bzero(temp_passwd, MAXSIZE);
 
-	int ret_val = recv_data(sock_control, buf, sizeof(buf));
+	int ret_val = recv_data(sock_control, buf, MAXSIZE);
 	if(ret_val == -1){
 		perror("ftp_serve_login : recv_data() error");
 		exit(EXIT_FAILURE);
 	}
 
-	int i = 5;
-	int n = 0;
-	while(buf[i] != 0){// buf[0~4] : "USER"
-		username[n++] = buf[i++];
-	}
+	char *decrypt_str = NULL;
+	decrypt_string(buf, &decrypt_str, ret_val);
+	strcpy(username, decrypt_str);
+	//printf("decrypt username : %s\n", username);
 
 	send_response(sock_control, 331);//User name okay, need password.
 
 	bzero(buf, MAXSIZE);
-	ret_val = recv_data(sock_control, buf, sizeof(buf));
+	ret_val = recv_data(sock_control, buf, MAXSIZE);
 	if(ret_val == -1){
 		perror("ftp_serve_login : recv_data() error");
 		exit(EXIT_FAILURE);
 	}
 
-	i = 5;
-	n = 0;
-	while(buf[i] != 0){// buf[0~4] : "PASS"
-		passwd[n++] = buf[i++];
-	}
+	decrypt_string(buf, &decrypt_str, ret_val);
+	strcpy(passwd, decrypt_str);
+	//printf("decrypt passwd : %s\n", passwd);
 
 	//// 用户名和密码验证
 	ret_val = ftp_serve_check_user(username, passwd);

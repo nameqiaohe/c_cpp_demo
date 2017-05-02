@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 18:18:38
-# Last Modified: 2017-05-01 21:11:44
+# Last Modified: 2017-05-03 01:31:18
 ####################################################*/
 #include "ftp_client.h"
 
@@ -154,15 +154,15 @@ int ftp_client_list(int sock_fd, int sock_conn){
 }
 
 /* 输入含有命令(code)和参数(arg)的 command(cmd) 结构,连接 code + arg,并放进一个字符串，然后发送给服务器 */
-int ftp_client_send_cmd(struct command *cmd){
+int ftp_client_send_username_password(struct command *cmd){
 	char buf[MAXSIZE];
 	int rc;
 
-	sprintf(buf, "%s %s", cmd->code, cmd->arg);
+	sprintf(buf, "%s", cmd->arg);
 
 	rc = send(sock_control, buf, (int) strlen(buf), 0);
 	if(rc < 0){
-		perror("ftp_client_send_cmd : Error sending command to server");
+		perror("ftp_client_send_username_password : Error sending command to server");
 		return -1;
 	}
 
@@ -184,10 +184,16 @@ void ftp_client_login(){
 		fflush(stdout);
 		read_input(user, 256);
 
+		char *encrypt_str;
+		int encrypt_len = encrypt_string(user, &encrypt_str);
+
 		/* 发送用户名到服务器 */
 		strcpy(cmd.code, "USER");
-		strcpy(cmd.arg, user);
-		ftp_client_send_cmd(&cmd);
+		//strcpy(cmd.arg, user);
+		strncpy(cmd.arg, encrypt_str, encrypt_len);
+		ftp_client_send_username_password(&cmd);
+
+		free(encrypt_str);
 
 		/* 等待应答码 331 */
 		int wait;
@@ -198,10 +204,15 @@ void ftp_client_login(){
 		pass = getpass("Password: ");
 		//printf("ftp_client_login : input pass is : %s\n", pass);
 
+		encrypt_len = encrypt_string(pass, &encrypt_str);
+
 		/* 发送密码到服务器 */
 		strcpy(cmd.code, "PASS");
-		strcpy(cmd.arg, pass);
-		ftp_client_send_cmd(&cmd);
+		//strcpy(cmd.arg, pass);
+		strncpy(cmd.arg, encrypt_str, encrypt_len);
+		ftp_client_send_username_password(&cmd);
+
+		free(encrypt_str);
 
 		/* 等待响应 */
 		int rc = read_reply();

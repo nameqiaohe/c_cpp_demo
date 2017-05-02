@@ -1,5 +1,6 @@
 CC := gcc
 CFLAGS := -Wall -g -Os
+LIBS = -lcrypto
 
 TARGET = ftp_serve
 SHDIR := ../common
@@ -20,7 +21,7 @@ else
 	@mkdir -p $(BIN_PATH)
 endif
 
-	@$(CC) -o $(BIN_PATH)/$(TARGET) $(SRC) $(CFLAGS)
+	@$(CC) -o $(BIN_PATH)/$(TARGET) $(SRC) $(CFLAGS) $(LIBS)
 
 .PHONY:
 clean:

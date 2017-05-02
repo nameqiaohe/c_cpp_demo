@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-27 17:36:28
-# Last Modified: 2017-04-29 13:43:13
+# Last Modified: 2017-05-03 00:27:32
 ####################################################*/
 #ifndef COMMON_H
 #define COMMON_H
@@ -24,6 +24,8 @@
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+
+#include <openssl/aes.h>
 
 #define DEBUG 1
 #define MAXSIZE 512
@@ -50,5 +52,8 @@ int send_response(int sock_fd, int rc);
 void trim_str(char *str, int n);
 
 void read_input(char *buf, int size);
+
+int encrypt_string(char *input_str, char **encrypt_str);
+void decrypt_string(char *encrypt_str, char **decrypt_str, int len);
 
 #endif
