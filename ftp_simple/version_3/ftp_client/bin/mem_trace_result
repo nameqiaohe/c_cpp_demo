@@ -1,0 +1,9 @@
+= Start
+@ ./bin/ftp_client:[0x401c7e] + 0x7c75c0 0x10
+@ ./bin/ftp_client:[0x401ace] - 0x7c75c0
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7ff2ecf6e11d] + 0x7c75e0 0x228
+@ /lib/x86_64-linux-gnu/libc.so.6:(getdelim+0x148)[0x7ff2ecf6edd8] + 0x7c7810 0x78
+@ /lib/x86_64-linux-gnu/libc.so.6:(fclose+0x113)[0x7ff2ecf6d7c3] - 0x7c75e0
+@ ./bin/ftp_client:[0x401c7e] + 0x7c75c0 0x10
+@ ./bin/ftp_client:[0x401b43] - 0x7c75c0
+= End

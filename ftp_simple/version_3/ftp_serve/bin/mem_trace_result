@@ -1,0 +1,9 @@
+= Start
+@ ./bin/ftp_serve:[0x401c4f] + 0x11745c0 0x12
+@ ./bin/ftp_serve:[0x401c4f] + 0x11745e0 0x12
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7f1a8531411d] + 0x1174600 0x228
+@ /lib/x86_64-linux-gnu/libc.so.6:(getdelim+0x148)[0x7f1a85314dd8] + 0x1174830 0x78
+@ ./bin/ftp_serve:[0x401767] - 0x1174830
+@ /lib/x86_64-linux-gnu/libc.so.6:(fclose+0x113)[0x7f1a853137c3] - 0x1174600
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7f1a8531411d] + 0x1174600 0x228
+@ /lib/x86_64-linux-gnu/libc.so.6:(fclose+0x113)[0x7f1a853137c3] - 0x117
