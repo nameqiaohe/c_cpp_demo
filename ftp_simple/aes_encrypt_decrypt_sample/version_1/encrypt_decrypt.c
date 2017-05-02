@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-02 00:03:53
-# Last Modified: 2017-05-02 00:29:56
+# Last Modified: 2017-05-02 23:14:24
 ####################################################*/
 #include <stdio.h>
 #include <string.h>
@@ -69,6 +69,12 @@ int main(int argc, char *argv[]){
 
 	//encrypt ( iv will change )
 	AES_cbc_encrypt(input_str, encrypt_str, len, &aes, iv, AES_ENCRYPT);
+	printf("-----encrypt string : %s\n", encrypt_str);
+	printf("-----encrypt string : ");
+	for(i = 0; i < len; ++i){
+		printf("%x%x", (encrypt_str[i] >> 4) & 0xf, encrypt_str[i] & 0xf);
+	}
+	printf("\n--------\n");
 
 	//alloc decrypt string
 	decrypt_str = (unsigned char *)calloc(len, sizeof(unsigned char));
