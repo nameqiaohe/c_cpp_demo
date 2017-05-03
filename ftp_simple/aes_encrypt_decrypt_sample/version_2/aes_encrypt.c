@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-02 00:03:53
-# Last Modified: 2017-05-02 13:25:59
+# Last Modified: 2017-05-03 12:51:07
 ####################################################*/
 #include <stdio.h>
 #include <string.h>
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
 		fread(iv, 1, file_len-1, fp);
 	}
 	fclose(fp);
-	printf("read file content and init iv, iv : %s\n", iv);
+	//printf("read file content and init iv, iv : %s\n", iv);
 	
 	if(AES_set_encrypt_key(key, 128, &aes) < 0){
 		fprintf(stderr, "Unable to set encryption key in AES\n");
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
 	//encrypt ( iv will change )
 	AES_cbc_encrypt(input_str, encrypt_str, len, &aes, iv, AES_ENCRYPT);
 
-	printf("after encrypt, iv : %s\n", iv);
+	//printf("after encrypt, iv : %s\n", iv);
 
 	//print
 	printf("input string : %s\n", input_str);

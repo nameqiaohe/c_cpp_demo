@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-02 00:03:53
-# Last Modified: 2017-05-02 13:33:16
+# Last Modified: 2017-05-03 12:49:12
 ####################################################*/
 #include <stdio.h>
 #include <string.h>
@@ -19,24 +19,28 @@ int main(int argc, char *argv[]){
 	unsigned char *input_str;
 	unsigned char *decrypt_str;
 
-	long file_len;
+	long file_len = 0;
 
 	unsigned int len;//encrypt length (in multiple of AES_BLOCK_SIZE)
 	unsigned int i;
 
-	if(argc != 2){
-		fprintf(stderr, "Usage : %s <filename>\n", argv[0]);
+	if(argc != 3){
+		fprintf(stderr, "Usage : %s <encrypt_filename> <iv_file>\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
 
+	char *encrypt_filename = argv[1];
 
-	FILE *fp_encrypt = fopen("./bin/encrypt_str.txt", "r");
+	char temp;
+
+	FILE *fp_encrypt = fopen(encrypt_filename, "r");
 	if(fp_encrypt == NULL){
-		fprintf(stderr, "Unable to open the file ./bin/encrypt_str.txt\n");
+		fprintf(stderr, "Unable to open the file %s\n", encrypt_filename);
 		exit(EXIT_FAILURE);
 	}
-	fseek(fp_encrypt, 0L, SEEK_END);
-	file_len = ftell(fp_encrypt);
+	while(fread(&temp, 1, 1, fp_encrypt) == 1){
+		file_len++;
+	}
 
 	//set the encryption length
 	len = 0;
@@ -55,34 +59,30 @@ int main(int argc, char *argv[]){
 	}
 	fseek(fp_encrypt, 0L, SEEK_SET);
 
-	char temp;
-	for(i = 0; i < len; ++i){
-		fscanf(fp_encrypt, "%c", &temp);
-		printf("input string : %c\n", temp);
-
+	i = 0;
+	while(fread(&input_str[i], 1, 1, fp_encrypt) == 1){
+		i++;
 	}
+
 	fclose(fp_encrypt);
 
-#if 0
-	char cur_real_path[200];
-	realpath(argv[0], cur_real_path);
+	char *iv_file = argv[2];
 
-	char *cur_path = dirname(cur_real_path);
-	printf("cur_path : %s\n", cur_path);
-	char *ivec_path = dirname(cur_path);
-	printf("ivec_path : %s\n", ivec_path);
-	strcat(ivec_path, "/ivec");
-#endif
-
-	FILE *fp_ivec = fopen("/home/wei/2016/c_cpp_demo/ftp_simple/aes_encrypt_decrypt_sample/version_2/ivec", "r");
+	FILE *fp_ivec = fopen(iv_file, "r");
 	if(fp_ivec == NULL){
-		fprintf(stderr, "Unable to open the file ../ivec\n");
+		fprintf(stderr, "Unable to open the file %s\n", iv_file);
 		exit(EXIT_FAILURE);
 	}
-	fseek(fp_ivec, 0L, SEEK_END);
-	file_len = ftell(fp_ivec);
+	file_len = 0;
+	while(fread(&temp, 1, 1, fp_ivec) == 1){
+		file_len++;
+	}
+
 	fseek(fp_ivec, 0L, SEEK_SET);
-	fread(iv, 1, file_len-1, fp_ivec);
+	i = 0;
+	while(fread(&iv[i], 1, 1, fp_ivec) == 1){
+		i++;
+	}
 	printf("iv : %s\n", iv);
 
 	fclose(fp_ivec);
@@ -110,8 +110,6 @@ int main(int argc, char *argv[]){
 	AES_cbc_encrypt(input_str, decrypt_str, len, &aes, iv, AES_DECRYPT);
 
 	//print
-	printf("input string : %s\n", input_str);
-
 	printf("decrypt string : %s\n", decrypt_str);
 
 	return 0;
