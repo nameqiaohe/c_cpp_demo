@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-04-09 15:34:41
-# Last Modified: 2017-04-20 21:27:18
+# Last Modified: 2017-05-17 01:12:52
 ####################################################*/
 #include "header.h"
 #include <errno.h>
@@ -97,6 +97,7 @@ static ssize_t rio_read(rio_t *rp, char *usrbuf, size_t n){
 		}
 	}
 
+	// 读取到多少个字节数据，就将多少个字节的数据拷贝到 usr_buf中
 #if 0
 	cnt = n;
 	if((size_t)rp->rio_cnt < n){
@@ -109,7 +110,7 @@ static ssize_t rio_read(rio_t *rp, char *usrbuf, size_t n){
 	rp->rio_bufptr += cnt;//读取后需要更新指针
 	rp->rio_cnt -= cnt;//未读取字节减少
 
-	return cnt;
+	return cnt;// 返回读取到的字节数
 }
 
 /* 不带缓冲区的rio_read--robustly read n bytes (unbuffered) */
@@ -134,7 +135,7 @@ size_t rio_readn(int fd, void *usrbuf, size_t n){
 		buf += nread;
 	}
 
-	return (n - left_cnt);
+	return (n - left_cnt);// 返回读取到的字节数
 }
 
 /* 供用户使用的读取函数。从缓冲区中读取最大maxlen字节数据
@@ -188,7 +189,7 @@ ssize_t rio_read_lineb(rio_t *rp, void *usrbuf, size_t maxlen){
 	}
 	*buf = 0;//设置字符串结束标志
 
-	return n;
+	return n;//返回读取到的数据：读取到的这一行有多少个字节
 }
 
 ssize_t rio_writen(int fd, void *usrbuf, size_t n){
@@ -210,7 +211,7 @@ ssize_t rio_writen(int fd, void *usrbuf, size_t n){
 		buf += nwritten;
 	}
 
-	return n;
+	return n;//返回写入的字节数	//将 n个字节数据全部写入，才会跳出 while循环，或者写入出错，直接返回 -1
 }
 
 /* open and return a listening socket on port
