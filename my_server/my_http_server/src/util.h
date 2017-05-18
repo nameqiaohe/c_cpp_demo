@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-16 19:45:17
-# Last Modified: 2017-05-18 10:52:26
+# Last Modified: 2017-05-18 19:57:31
 ####################################################*/
 #ifndef UTIL_H
 #define UTIL_H
@@ -22,11 +22,11 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-typedef struct conf_t{
+typedef struct st_conf_t{
 	void *root;
 	int port;
 	int thread_num;
-}conf_t;
+}st_conf_t;
 
 //创建监听socket描述符
 int open_listen_fd(int port);
@@ -35,6 +35,6 @@ int open_listen_fd(int port);
 int make_socket_nonblocking(int fd);
 
 //从配置文件中获取相关信息
-int read_conf(char *filename, conf_t *cf, char *buf, int len);
+int read_conf(char *filename, st_conf_t *cf, char *buf, int len);
 
 #endif

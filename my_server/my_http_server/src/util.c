@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-16 19:52:16
-# Last Modified: 2017-05-18 10:53:05
+# Last Modified: 2017-05-18 19:58:00
 ####################################################*/
 #include "util.h"
 #include <sys/socket.h>
@@ -78,7 +78,7 @@ int make_socket_nonblocking(int fd){
 	return 0;
 }
 
-int read_conf(char *filename, conf_t *cf, char *buf, int len){
+int read_conf(char *filename, st_conf_t *cf, char *buf, int len){
 	FILE *fp = fopen(filename, "r");
 	if(!fp){
 		log_error("can not open config file : %s", filename);
