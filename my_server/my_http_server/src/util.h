@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-16 19:45:17
-# Last Modified: 2017-05-16 19:52:08
+# Last Modified: 2017-05-18 10:52:26
 ####################################################*/
 #ifndef UTIL_H
 #define UTIL_H
@@ -16,8 +16,9 @@
 //分割符
 #define DELIM "="
 
-#define CONF_OK 0
-#define CONF_ERROR 100
+//ST : simple httpserver
+#define ST_CONF_OK 0
+#define ST_CONF_ERROR 100
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 

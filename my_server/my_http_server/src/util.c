@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-16 19:52:16
-# Last Modified: 2017-05-16 20:37:29
+# Last Modified: 2017-05-18 10:53:05
 ####################################################*/
 #include "util.h"
 #include <sys/socket.h>
@@ -82,7 +82,7 @@ int read_conf(char *filename, conf_t *cf, char *buf, int len){
 	FILE *fp = fopen(filename, "r");
 	if(!fp){
 		log_error("can not open config file : %s", filename);
-		return CONF_ERROR;
+		return ST_CONF_ERROR;
 	}
 
 	int pos;
@@ -99,7 +99,7 @@ int read_conf(char *filename, conf_t *cf, char *buf, int len){
 		debug("read one line from conf : %s, len = %d", current_pos, line_len);
 
 		if(!delim_pos){
-			return CONF_ERROR;
+			return ST_CONF_ERROR;
 		}
 
 		if(current_pos[strlen(current_pos) - 1] == '\n'){
@@ -123,5 +123,5 @@ int read_conf(char *filename, conf_t *cf, char *buf, int len){
 
 	fclose(fp);
 
-	return CONF_OK;
+	return ST_CONF_OK;
 }

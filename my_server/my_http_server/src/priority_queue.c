@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-18 00:34:44
-# Last Modified: 2017-05-18 01:18:23
+# Last Modified: 2017-05-18 10:51:17
 ####################################################*/
 #include "priority_queue.h"
 
@@ -18,7 +18,7 @@ int pq_init(pq_t *pq, pq_comp_t comp, size_t size){
 	pq->size = size + 1;
 	pq->comp = comp;
 
-	return RC_OK;
+	return ST_OK;
 }
 
 /*
@@ -65,7 +65,7 @@ int resize(pq_t *pq, size_t new_size){
 	pq->queue = new_ptr;//让 queue指向新的内存
 	pq->size = new_size;//改变大小
 
-	return RC_OK;
+	return ST_OK;
 }
 
 //交换两个节点的值
@@ -77,7 +77,8 @@ void exch(pq_t *pq, size_t index_i, size_t index_j){
 }
 
 void swim(pq_t *pq, size_t index){
-	while(index > 1 && pq->comp(pq->queue[index], pq->queue[index/2])){
+	//comp函数 若返回值不等于 0,表示 参数1 小于 参数2，具体见timer.c
+	while(index > 1 && pq->comp(pq->queue[index], pq->queue[index/2])){//index/2 表示父节点索引
 		exch(pq, index, index/2);
 		index /= 2;
 	}
@@ -90,14 +91,17 @@ size_t sink(pq_t *pq, size_t cur){
 	size_t l_index;//左孩子的索引
 	size_t n_alloc = pq->n_alloc;
 
-	while(2*index <= n_alloc){
+	while(2*cur <= n_alloc){
 		l_index = 2 * cur;
 
 		//找到左右孩子中较大的值
+		//comp函数 若返回值不等于 0,表示 参数1 小于 参数2，具体见timer.c
 		if(l_index < n_alloc && pq->comp(pq->queue[l_index + 1], pq->queue[l_index])){
 			l_index++;
 		}
 
+		// 拿 当前节点的值 和 左右孩子中较大的值比较
+		//comp函数 若返回值不等于 0,表示 参数1 小于 参数2，具体见timer.c
 		if(!pq->comp(pq->queue[l_index], pq->queue[cur])){
 			break;
 		}
@@ -112,19 +116,20 @@ size_t sink(pq_t *pq, size_t cur){
 int pq_del_min(pq_t *pq){
 	if(pq_is_empty(pq)){//pq_is_empty() 返回值不为 0，表示队列为空
 		log_info("pq_del_min() : queue is empty");
-		return RC_OK;
+		return ST_OK;
 	}
 
 	exch(pq, 1, pq->n_alloc);
 	pq->n_alloc--;
 	sink(pq, 1);
+	//这个分支是什么意思？？？
 	if(pq->n_alloc > 0 && pq->n_alloc <= (pq->size - 1)/4){
 		if(resize(pq, pq->size/2) < 0){
 			return -1;
 		}
 	}
 
-	return RC_OK;
+	return ST_OK;
 }
 
 int pq_insert(pq_t *pq, void *item){
@@ -137,7 +142,7 @@ int pq_insert(pq_t *pq, void *item){
 	pq->queue[++pq->n_alloc] = item;
 	swim(pq, pq->n_alloc);
 
-	return RC_OK;
+	return ST_OK;
 }
 
 int pq_sink(pq_t *pq, size_t cur){
