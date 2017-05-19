@@ -1,9 +1,29 @@
 ===================== 涉及的点 ======================
 1、DEBUG调试宏
+
 2、epoll基本操作
+	epoll_create
+	epoll_ctl
+	epoll_wait
+
+	EPOLLET
+	EPOLLONESHOT
+
 3、线程池
+	
 4、rio读写
-5、
+	
+5、优先队列/二叉堆
+	timer
+6、双向链表
+	存储header
+	两个宏 offsetof、container_of
+7、信号注册
+	sigaction(SIGPIPE, &sa, NULL)
+8、socket基本操作
+	
+9、状态机
+	用于解析header、解析body
 
 
 
