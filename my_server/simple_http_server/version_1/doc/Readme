@@ -1,0 +1,20 @@
+===================== 涉及的点 ======================
+1、DEBUG调试宏
+2、epoll基本操作
+3、线程池
+4、rio读写
+5、
+
+
+
+====================== 警告、错误，及其修改方法 ===================
+1、warning: implicit declaration of function XXX
+	(1) 头文件未包含
+	(2) 函数声明 和 定义名字不一样
+
+2、若 list_wrapper.h 中 list_del() 函数中将 entry->next、entry->prev 置空，运行时会报错：Segmentation fault (core dumped)
+	经定位发现出错位置在 http_request.c的 st_http_handle_header() 函数中的 82行，即strncmp()报错
+	会在第二次进入 list_for_each()时报错
+
+	解决方法：注释掉 entry->next = entry->prev = NULL;
+	具体原因待分析
