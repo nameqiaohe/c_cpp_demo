@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-18 00:34:44
-# Last Modified: 2017-05-18 22:47:28
+# Last Modified: 2017-05-19 17:44:15
 ####################################################*/
 #include "priority_queue.h"
 
@@ -38,8 +38,8 @@ size_t st_pq_size(st_pq_t *pq){
  * 队列中元素存储从 下标为 1 开始
  * */
 void *st_pq_min(st_pq_t *pq){
-	if(pq_is_empty(pq)){//pq_is_empty()返回值不为 0，表示队列为空
-		retuen NULL;
+	if(st_pq_is_empty(pq)){//pq_is_empty()返回值不为 0，表示队列为空
+		return NULL;
 	}
 
 	return pq->queue[1];
@@ -73,7 +73,7 @@ void exch(st_pq_t *pq, size_t index_i, size_t index_j){
 	void *tmp = pq->queue[index_i];
 
 	pq->queue[index_i] = pq->queue[index_j];
-	pa->queue[index_j] = tmp;
+	pq->queue[index_j] = tmp;
 }
 
 void swim(st_pq_t *pq, size_t index){
@@ -114,7 +114,7 @@ size_t sink(st_pq_t *pq, size_t cur){
 }
 
 int st_pq_del_min(st_pq_t *pq){
-	if(pq_is_empty(pq)){//pq_is_empty() 返回值不为 0，表示队列为空
+	if(st_pq_is_empty(pq)){//st_pq_is_empty() 返回值不为 0，表示队列为空
 		log_info("pq_del_min() : queue is empty");
 		return ST_OK;
 	}

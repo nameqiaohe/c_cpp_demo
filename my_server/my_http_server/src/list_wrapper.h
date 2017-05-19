@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-17 12:46:08
-# Last Modified: 2017-05-18 17:38:16
+# Last Modified: 2017-05-19 18:12:27
 ####################################################*/
 #ifndef LIST_WRAPPER_H
 #define LIST_WRAPPER_H
@@ -13,7 +13,7 @@
 #endif
 
 typedef struct list_head{
-	struct list_head *prev, next;
+	struct list_head *prev, *next;
 }list_head;
 
 #define INIT_LIST_HEAD(ptr) do {\
@@ -47,11 +47,11 @@ static inline void __list_del(list_head *prev, list_head *next){
 
 static inline void list_del(list_head *entry){
 	__list_del(entry->prev, entry->next);
-	entry->next = entry->prev = NULL;
+	//entry->next = entry->prev = NULL; //若置空，会出现错误：
 }
 
 //判断是否为空链表
-static inline int ilst_empty(list_head *head){
+static inline int list_empty(list_head *head){
 	return (head->next == head) && (head->prev == head);
 }
 

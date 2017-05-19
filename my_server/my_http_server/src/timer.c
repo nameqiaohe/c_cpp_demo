@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-18 22:52:38
-# Last Modified: 2017-05-18 23:20:17
+# Last Modified: 2017-05-19 17:46:02
 ####################################################*/
 #include "timer.h"
 #include <sys/time.h>
@@ -29,7 +29,7 @@ void st_time_update(){
 	check(rc == 0, "st_time_update() : gettimeofday() error");
 
 	st_current_msec = tv.tv_sec * 1000 + tv.tv_usec / 1000;
-	debug("in st_time_update(), time = %zu", st_current_msec);
+	debug("st_time_update(), time = %zu", st_current_msec);
 }
 
 int st_timer_init(){
@@ -54,7 +54,7 @@ int st_find_timer(){
 		check(timer_node != NULL, "st_find_timer() : st_pq_min() error");
 
 		if(timer_node->deleted){
-			rc = st_pq_del_min(&st_time);
+			rc = st_pq_del_min(&st_timer);
 			check(rc == 0, "st_find_timer() : st_pq_del_min()");
 
 			free(timer_node);
@@ -133,5 +133,5 @@ void st_del_timer(st_http_request_t *rq){
 	st_timer_node *timer_node = rq->timer;
 	check(timer_node != NULL, "st_del_timer() : rq->timer is NULL");
 
-	timer_node->delete = 1;
+	timer_node->deleted = 1;
 }

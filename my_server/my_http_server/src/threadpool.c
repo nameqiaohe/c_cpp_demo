@@ -3,9 +3,10 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-17 10:07:39
-# Last Modified: 2017-05-17 12:10:53
+# Last Modified: 2017-05-19 17:45:39
 ####################################################*/
 #include "threadpool.h"
+#include <pthread.h>
 
 threadpool_t *threadpool_init(int thread_num){
 	if(thread_num <= 0){
@@ -26,7 +27,7 @@ threadpool_t *threadpool_init(int thread_num){
 	pool->started = 0;
 
 	//为 线程ID、任务队列头 申请存放的内存
-	pool->threads_id = (pthread_t *)malloc(sizeof(pthread_t) * thread_num));
+	pool->threads_id = (pthread_t *)malloc(sizeof(pthread_t) * thread_num);
 	pool->head = (task_t *)malloc(sizeof(task_t));
 	if(pool->threads_id == NULL || pool->head == NULL){//若申请失败，需释放之前申请的资源
 		if(pool){
@@ -53,7 +54,7 @@ threadpool_t *threadpool_init(int thread_num){
 	//初始化 条件变量
 	rc = pthread_cond_init(&(pool->cond), NULL);
 	if(rc != 0){
-		pthread_mutex_destory(&(pool->lock));//若 条件变量初始化失败，需释放 互斥锁
+		pthread_mutex_destroy(&(pool->lock));//若 条件变量初始化失败，需释放 互斥锁
 		log_error("threadpool_init() : pthread_cond_init() failed");
 		if(pool){
 			threadpool_free(pool);
@@ -65,7 +66,7 @@ threadpool_t *threadpool_init(int thread_num){
 	for(i = 0; i < thread_num; ++i){
 		rc = pthread_create(&(pool->threads_id[i]), NULL, threadpool_worker, (void *)pool);
 		if(rc != 0){
-			threadpool_destory(pool, 0);
+			threadpool_destroy(pool, 0);
 			return NULL;
 		}
 
@@ -149,17 +150,17 @@ int threadpool_free(threadpool_t *pool){
 	return 0;
 }
 
-int threadpool_destory(threadpool_t *pool, int shutdown_mode){
+int threadpool_destroy(threadpool_t *pool, int shutdown_mode){
 	int err = 0;
 
 	if(pool == NULL){
-		log_error("threadpool_destory() : pool == NULL");
+		log_error("threadpool_destroy() : pool == NULL");
 		return tp_invalid;
 	}
 
 	int rc = pthread_mutex_lock(&(pool->lock));
 	if(rc != 0){
-		log_error("threadpool_destory() : pthread_mutex_lock() failed");
+		log_error("threadpool_destroy() : pthread_mutex_lock() failed");
 		return tp_lock_fail;
 	}
 
@@ -167,7 +168,7 @@ int threadpool_destory(threadpool_t *pool, int shutdown_mode){
 		//设置shutdown_mode，并唤醒所有线程
 		if(pool->shutdown){//shutdown不等于0，其值要么是 1，要么是 2，这两个值都是表示已关闭
 			err = tp_already_shutdown;
-			log_info("threadpool_destory() : threadpool already shutdown");
+			log_info("threadpool_destroy() : threadpool already shutdown");
 			break;
 		}
 
@@ -176,19 +177,19 @@ int threadpool_destory(threadpool_t *pool, int shutdown_mode){
 		rc = pthread_cond_broadcast(&(pool->cond));
 		if(rc != 0){
 			err = tp_cond_broadcast;
-			log_error("threadpool_destory() : pthread_cond_broadcast() failed");
+			log_error("threadpool_destroy() : pthread_cond_broadcast() failed");
 			break;
 		}
 
 		rc = pthread_mutex_unlock(&(pool->lock));
 		if(rc != 0){
 			err = tp_lock_fail;//这里是不是应该改成 tp_unlock_fail ???
-			log_error("threadpool_destory() : pthread_mutex_unlock() failed");
+			log_error("threadpool_destroy() : pthread_mutex_unlock() failed");
 			break;
 		}
 
 		int i = 0;
-		for(i = 0; i < thread_count; ++i){
+		for(i = 0; i < pool->thread_count; ++i){
 			rc = pthread_join(pool->threads_id[i], NULL);
 			if(rc != 0){
 				err = tp_thread_fail;//这里是不是应该改成 tp_thread_join_fail ???
@@ -196,11 +197,11 @@ int threadpool_destory(threadpool_t *pool, int shutdown_mode){
 
 			log_info("threads_id 0x%x exit", (uint32_t)pool->threads_id[i]);
 		}
-	}whlie(0);
+	}while(0);
 
 	if(err == 0){
 		(void)pthread_mutex_destroy(&(pool->lock));
-		(void)pthread_cond_destory(&(pool->cond));
+		(void)pthread_cond_destroy(&(pool->cond));
 
 		threadpool_free(pool);
 	}

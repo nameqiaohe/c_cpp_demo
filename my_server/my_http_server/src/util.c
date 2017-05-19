@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-16 19:52:16
-# Last Modified: 2017-05-18 19:58:00
+# Last Modified: 2017-05-19 15:23:24
 ####################################################*/
 #include "util.h"
 #include <sys/socket.h>
@@ -69,7 +69,7 @@ int make_socket_nonblocking(int fd){
 	}
 
 	flags |= O_NONBLOCK;
-	rc = fcntl(fd, F_SETFL, 0);
+	rc = fcntl(fd, F_SETFL, flags);
 	if(rc == -1){
 		log_error("fcntl()--F_SETFL");
 		return -1;
@@ -85,7 +85,7 @@ int read_conf(char *filename, st_conf_t *cf, char *buf, int len){
 		return ST_CONF_ERROR;
 	}
 
-	int pos;
+	int pos = 0;
 	char *delim_pos;//分隔符所在位置
 	int line_len;
 	char *current_pos = buf + pos;// current_pos指向 buf，buf用来存储读取到的内容

@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-17 09:38:00
-# Last Modified: 2017-05-17 10:07:29
+# Last Modified: 2017-05-19 17:45:15
 ####################################################*/
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
@@ -61,7 +61,7 @@ threadpool_t *threadpool_init(int thread_num);
 int threadpool_add_worker(threadpool_t *pool, void (*func)(void *), void *arg);
 
 //销毁线程池
-int threadpool_destory(threadpool_t *pool, int shutdown_mode);
+int threadpool_destroy(threadpool_t *pool, int shutdown_mode);
 
 int threadpool_free(threadpool_t *pool);
 
@@ -69,5 +69,6 @@ void *threadpool_worker(void *arg);
 
 #ifdef __cplusplus
 }
+#endif
 
 #endif

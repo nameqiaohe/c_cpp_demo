@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-18 20:45:01
-# Last Modified: 2017-05-19 00:47:26
+# Last Modified: 2017-05-19 17:42:29
 ####################################################*/
 #include "http.h"
 
@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include "http_parse.h"
-#include "epoll.h"
+#include "epoll_wrapper.h"
 #include "timer.h"
 
 static char *ROOT = NULL;
@@ -147,7 +147,7 @@ void do_request(void *ptr){
 	}
 
 	struct epoll_event event;
-	event.data_ptr = ptr;
+	event.data.ptr = ptr;
 	event.events = EPOLLIN | EPOLLET | EPOLLONESHOT;
 
 	epoll_mod_wrapper(rq->epfd, rq->fd, &event);
@@ -196,7 +196,7 @@ void parse_uri(char *uri, int uri_length, char *filename, char *query_string){
 		strcat(filename, "index.html");
 	}
 
-	lg_info("parse_uri() : filename = %s", filename);
+	log_info("parse_uri() : filename = %s", filename);
 	return;
 }
 
@@ -267,7 +267,7 @@ void server_static(int fd, char *filename, size_t filesize, st_http_out_t *out){
 	}
 
 	int srcfd = open(filename, O_RDONLY, 0);
-	check(srcfd, 2, "server_static() : open() error");
+	check(srcfd > 2, "server_static() : open() error");
 
 	//can use send file
 	char *src_addr = mmap(NULL, filesize, PROT_READ, MAP_PRIVATE, srcfd, 0);

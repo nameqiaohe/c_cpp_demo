@@ -3,13 +3,14 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-18 19:39:15
-# Last Modified: 2017-05-18 20:05:14
+# Last Modified: 2017-05-19 17:43:03
 ####################################################*/
 #ifndef HTTP_REQUEST_H
 #define HTTP_REQUEST_H
 
 #include <time.h>
-#include "http.h"
+#include "list_wrapper.h"
+#include "util.h"
 
 #define ST_AGAIN EAGAIN
 
@@ -27,6 +28,7 @@
 #define ST_HTTP_NOT_MODIFIED 304
 #define ST_HTTP_NOT_FOUND 404
 
+//#define MAX_BUF 8192
 #define MAX_BUF 8192
 
 typedef struct st_http_request_t{
@@ -95,14 +97,14 @@ void st_http_handle_header(st_http_request_t *rq, st_http_out_t *out);
 int st_http_close_conn(st_http_request_t *rq);
 
 int st_init_request_t(st_http_request_t *rq, int fd, int epfd, st_conf_t *cf);
-int st_free_request_t(st_free_request_t *rq);
+int st_free_request_t(st_http_request_t *rq);
 
 int st_init_out_t(st_http_out_t *out, int fd);
 int st_free_out_t(st_http_out_t *out);
 
 const char *get_msg_from_status_code(int status_code);
 
-st_http_header_handler_t st_http_header_in[];
+extern st_http_header_handler_t st_http_header_in[];
 
 //这三个函数 对应于上边的 st_http_header_handler_pt指针
 int st_http_process_ignore(st_http_request_t *rq, st_http_out_t *out, char *data, int len);

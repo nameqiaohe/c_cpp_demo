@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-18 20:37:42
-# Last Modified: 2017-05-18 23:20:47
+# Last Modified: 2017-05-19 17:41:10
 ####################################################*/
 #ifndef HTTP_H
 #define HTTP_H
@@ -11,21 +11,21 @@
 #include <strings.h>
 #include <stdint.h>
 
+#include "http_request.h"
 #include "rio.h"
 #include "list_wrapper.h"
 #include "dbg.h"
 #include "util.h"
-#include "http_request.h"
 
 #define MAX_LINE 8192
 #define SHOT_LINE 512
 
-#define zv_str3_cmp(m, c0, c1, c2, c3)                                       \
+#define st_str3_cmp(m, c0, c1, c2, c3)                                       \
 	    *(uint32_t *) m == ((c3 << 24) | (c2 << 16) | (c1 << 8) | c0)
-#define zv_str3Ocmp(m, c0, c1, c2, c3)                                       \
+#define st_str3Ocmp(m, c0, c1, c2, c3)                                       \
 	    *(uint32_t *) m == ((c3 << 24) | (c2 << 16) | (c1 << 8) | c0)
 
-#define zv_str4cmp(m, c0, c1, c2, c3)                                        \
+#define st_str4cmp(m, c0, c1, c2, c3)                                        \
 	    *(uint32_t *) m == ((c3 << 24) | (c2 << 16) | (c1 << 8) | c0)
 
 typedef struct mime_type_t{

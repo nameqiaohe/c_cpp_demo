@@ -3,10 +3,11 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-16 23:23:51
-# Last Modified: 2017-05-17 01:04:55
+# Last Modified: 2017-05-19 13:03:33
 ####################################################*/
 #include "rio.h"
 #include "dbg.h"
+#include <unistd.h>
 
 /*
  * robustly read n bytes, unbuffered
@@ -35,8 +36,8 @@ ssize_t rio_read_n(int fd, void *usr_buf, size_t n){
 			break;
 		}
 
-		n_left -= nread;
-		buf_p += nread;
+		n_left -= n_read;
+		buf_p += n_read;
 	}
 
 	return (n - n_left);// 返回读取到的字节数

@@ -3,16 +3,27 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-18 20:05:28
-# Last Modified: 2017-05-18 20:37:25
+# Last Modified: 2017-05-19 17:13:28
 ####################################################*/
+
+/* why define _GNU_SOURCE? http://stackoverflow.com/questions/15334558/compiler-gets-warnings-when-using-strptime-function-ci */
 #ifndef _GUN_SOURCE
 #define _GUN_SOURCE
+#endif
+
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE
 #endif
 
 #include "http_request.h"
 #include "error.h"
 #include <math.h>
 #include <unistd.h>
+#include <time.h>
+#include <string.h>
+#include <strings.h>
+#include <stdlib.h>
+#include "dbg.h"
 
 st_http_header_handler_t st_http_headers_in[] = {
 	{"Host", st_http_process_ignore},
@@ -23,7 +34,7 @@ st_http_header_handler_t st_http_headers_in[] = {
 
 int st_init_request_t(st_http_request_t *rq, int fd, int epfd, st_conf_t *cf){
 	rq->fd = fd;
-	rq->epfd = epfs;
+	rq->epfd = epfd;
 	rq->pos = rq->last = 0;
 
 	rq->state = 0;
@@ -34,7 +45,7 @@ int st_init_request_t(st_http_request_t *rq, int fd, int epfd, st_conf_t *cf){
 	return ST_OK;
 }
 
-int st_free_request_t(st_free_request_t *rq){
+int st_free_request_t(st_http_request_t *rq){
 	//TODO
 	(void)rq;
 
@@ -46,6 +57,8 @@ int st_init_out_t(st_http_out_t *out, int fd){
 	out->keep_alive = 0;
 	out->modified = 1;//表示未修改
 	out->status = 0;
+
+	return ST_OK;
 }
 
 int st_free_out_t(st_http_out_t *out){
@@ -119,7 +132,7 @@ int st_http_process_if_modified_since(st_http_request_t *rq, st_http_out_t *out,
 	time_t client_time = mktime(&tm);
 	double time_diff = difftime(out->mtime, client_time);
 	if(fabs(time_diff) < 1e-6){
-		log_info("content not modified client_time = %d, mtime = %d\n", client_time, out->mtime);
+		log_info("content not modified client_time = %d, mtime = %d\n", (int)client_time, (int)out->mtime);
 		out->modified = 0;
 		out->status = ST_HTTP_NOT_MODIFIED;
 	}

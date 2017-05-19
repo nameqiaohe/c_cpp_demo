@@ -3,13 +3,14 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-18 00:24:22
-# Last Modified: 2017-05-18 22:44:50
+# Last Modified: 2017-05-19 17:43:54
 ####################################################*/
 #ifndef PRIORITY_QUEUE_H
 #define PRIORITY_QUEUE_H
 
 #include "dbg.h"
 #include "error.h"
+#include <unistd.h>
 
 #define PQ_DEFAULT_SIZE 10
 
