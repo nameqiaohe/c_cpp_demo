@@ -3,10 +3,18 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-19 23:39:26
-# Last Modified: 2017-05-20 00:09:18
+# Last Modified: 2017-05-20 08:59:44
 ####################################################*/
 
-参考：http://blog.csdn.net/xiajun07061225/article/details/9250579
+参考：
+	【Linux学习】epoll详解
+		http://blog.csdn.net/xiajun07061225/article/details/9250579
+	IO多路复用之epoll总结
+		http://www.cnblogs.com/Anker/archive/2013/08/17/3263780.html
+	高并发网络编程之epoll详解
+		http://www.open-open.com/lib/view/open1410403215664.html
+	我读过的最好的epoll讲解--转自”知乎“
+		https://my.oschina.net/dclink/blog/287198
 
 1. int epoll_create(int size);
 	创建一个epoll的句柄。自从linux2.6.8之后，size参数是被忽略的。需要注意的是，当创建好epoll句柄后，它就是会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。
