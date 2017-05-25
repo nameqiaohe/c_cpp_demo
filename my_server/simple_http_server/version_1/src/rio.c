@@ -3,7 +3,7 @@
 # Author: xxx
 # Email: xxx@126.com
 # Create Time: 2017-05-16 23:23:51
-# Last Modified: 2017-05-19 13:03:33
+# Last Modified: 2017-05-26 00:23:14
 ####################################################*/
 #include "rio.h"
 #include "dbg.h"
@@ -83,7 +83,7 @@ void rio_read_init_b(rio_t *rp, int fd){
 ssize_t rio_read(rio_t *rp, char *usr_buf, size_t n){
 	size_t cnt;
 
-	while(rp->rio_cnt <= 0){
+	while(rp->rio_cnt <= 0){//内部缓冲区中没有数据可读时，调用read()
 		rp->rio_cnt = read(rp->rio_fd, rp->rio_buf, sizeof(rp->rio_buf));
 		if(rp->rio_cnt < 0){
 			if(errno == EAGAIN){// 已经读到 n 个字节的数据
