@@ -1,0 +1,12 @@
+= Start
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7f505d38211d] + 0x15335c0 0x228
+@ .:[0x400ddf] + 0x15337f0 0xa0
+@ /lib/x86_64-linux-gnu/libc.so.6:(fclose+0x113)[0x7f505d3817c3] - 0x15335c0
+@ .:[0x400e71] + 0x15335c0 0x9f
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7f505d38211d] + 0x15338a0 0x228
+@ /lib/x86_64-linux-gnu/libc.so.6:(fclose+0x113)[0x7f505d3817c3] - 0x15338a0
+@ .:[0x400f5d] - 0x15337f0
+@ .:[0x400f77] - 0x15335c0
+@ /lib/x86_64-linux-gnu/libc.so.6:(clearenv+0x5d)[0x7f505d34cbcd] - 0x1533010
+@ /lib/x86_64-linux-gnu/libc.so.6:(tdestroy+0x5d)[0x7f505d41759d] - 0x1533120
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7f505d48621c] - 0x1533150
