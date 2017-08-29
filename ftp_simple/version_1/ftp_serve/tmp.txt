@@ -1,7 +1,0 @@
--rw-rw-r-- 1 wei wei 7778 Apr 28 11:42 ftp_serve.c
--rw-rw-r-- 1 wei wei  696 Apr 27 16:32 ftp_serve.h
--rw-rw-r-- 1 wei wei  574 Apr 28 10:53 Makefile
--rw-rw-r-- 1 wei wei  658 Apr 28 10:52 makefile.bak
--rw-rw-r-- 1 wei wei  574 Apr 28 10:41 makefile.bak_new
-drwxrwxr-x 2 wei wei 4096 Apr 28 11:42 result
--rw-rw-r-- 1 wei wei    0 Apr 28 11:43 tmp.txt
